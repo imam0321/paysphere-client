@@ -1,4 +1,5 @@
 import App from "@/App";
+import AboutPage from "@/pages/AboutPage";
 import HomePage from "@/pages/HomePage";
 import { createBrowserRouter } from "react-router";
 
@@ -8,9 +9,13 @@ export const router = createBrowserRouter([
     path: "/",
     children: [
       {
+        index: true,
         Component: HomePage,
         path: "/",
-        index: true,
+      },
+      {
+        Component: AboutPage,
+        path: "/about",
       },
     ],
   },

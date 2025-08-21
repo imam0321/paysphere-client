@@ -23,10 +23,10 @@ import { useEffect, useState } from "react";
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/contact", label: "Contact" },
-  { to: "/faq", label: "FAQ" },
+  { to: "#features", label: "Features" },
+  { to: "#pricing", label: "Pricing" },
+  { to: "#contact", label: "Contact" },
+  { to: "#faq", label: "FAQ" },
 ];
 
 export default function Navbar() {
@@ -42,6 +42,16 @@ export default function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleScroll = (to: string) => {
+    if (to.startsWith("#")) {
+      const el = document.querySelector(to);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      window.scrollTo(0, 0)
+    }
+    
+  };
+
   return (
     <header className="sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -55,7 +65,8 @@ export default function Navbar() {
                 <NavigationMenuItem key={index}>
                   <NavigationMenuLink asChild>
                     <Link
-                      to={link.to}
+                      to={link.to.startsWith("#") ? "/" : link.to}
+                      onClick={() => handleScroll(link.to)}
                       className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
                     >
                       {link.label}
@@ -89,8 +100,11 @@ export default function Navbar() {
                       <NavigationMenuItem key={link.to}>
                         <NavigationMenuLink asChild>
                           <Link
-                            to={link.to}
-                            onClick={() => setOpen(false)}
+                            to={link.to.startsWith("#") ? "/" : link.to}
+                            onClick={() => {
+                              handleScroll(link.to);
+                              setOpen(false);
+                            }}
                             className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
                           >
                             {link.label}
