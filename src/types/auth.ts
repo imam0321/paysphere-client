@@ -37,3 +37,31 @@ export interface IRegisterResponse {
   walletId: WalletId;
 }
 
+export interface ILogin {
+  email: string;
+  password: string;
+}
+
+export interface ILoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+}
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: TRole;
+  phone: string;
+  feeRate?: number;
+  commissionRate?: number;
+  isActive: TActive;
+  isApproved: boolean;
+  isVerified: boolean;
+  isDeleted: boolean;
+  transactionId: string[]
+  createdAt: string;
+  updatedAt: string;
+  walletId: string;
+}

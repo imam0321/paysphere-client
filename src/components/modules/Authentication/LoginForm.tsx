@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,18 +12,42 @@ import {
 import { Input } from "@/components/ui/input";
 import Password from "@/components/ui/Password";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLoginMutation } from "@/redux/features/auth/auth";
+import { toast } from "sonner";
+
+const formSchema = z.object({
+  email: z.email(),
+  password: z.string(),
+});
 
 export default function LoginForm() {
-  const form = useForm({
+  const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onsubmit = async (data) => {
-    console.log(data);
+  const onsubmit = async (data: z.infer<typeof formSchema>) => {
+    const userInfo = {
+      email: data.email,
+      password: data.password,
+    };
+    const toastId = toast.loading("login processing...");
+    try {
+      await login(userInfo).unwrap();
+      toast.success("User login successfully", { id: toastId });
+      navigate("/");
+    } catch (error: any) {
+      toast.error(error?.data?.message, { id: toastId });
+    }
   };
   return (
     <Form {...form}>
@@ -67,7 +92,7 @@ export default function LoginForm() {
         />
 
         <Button type="submit" className="w-full rounded-xl mt-2">
-          Login
+          {isLoading ? "Login..." : "Login"}
         </Button>
         <p className="text-center text-sm mt-2">
           Don’t have an account?{" "}
