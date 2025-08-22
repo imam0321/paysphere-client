@@ -7,9 +7,12 @@ import { motion } from "framer-motion";
 import TxRow from "./TxRow";
 import Stat from "./Stat";
 import QuickAction from "./QuickAction";
+import { useUserInfoQuery } from "@/redux/features/auth/auth";
 
 
 export default function Hero() {
+  const { data, isLoading } = useUserInfoQuery(undefined);
+
   return (
     <section className="relative overflow-hidden">
       <div className="absolute -z-10 inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-200/50 via-white to-transparent dark:from-fuchsia-900/20" />
@@ -72,9 +75,9 @@ export default function Hero() {
                 </CardHeader>
                 <CardContent className="grid gap-4">
                   <div className="grid grid-cols-3 gap-3">
-                    <Stat label="Balance" value="00.00" />
-                    <Stat label="Monthly Spend" value="00.00" />
-                    <Stat label="Rewards" value="00 pts" />
+                    <Stat label="Balance" value={data?.walletId?.balance as number} />
+                    <Stat label="Monthly Spend" value={0} />
+                    <Stat label="Rewards" value={0} />
                   </div>
                   <div className="grid sm:grid-cols-3 gap-3">
                     <QuickAction

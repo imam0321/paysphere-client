@@ -1,5 +1,5 @@
 
-export type { IRegister, IRegisterResponse, ILogin, ILoginResponse } from './auth';
+export type { IRegister, IRegisterResponse, ILogin, ILoginResponse, IUserResponse } from './auth';
 
 
 export interface IMeta {

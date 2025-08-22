@@ -65,3 +65,27 @@ export interface User {
   updatedAt: string;
   walletId: string;
 }
+
+export type TWalletStatus = "active" | "blocked"
+
+export interface IUserResponse {
+  _id: string;
+  name: string;
+  email: string;
+  role: TRole;
+  phone: string;
+  feeRate?: number;
+  commissionRate?: number;
+  isActive: TActive;
+  isApproved: boolean;
+  isVerified: boolean;
+  isDeleted: boolean;
+  transactionId: string[]
+  createdAt: string;
+  updatedAt: string;
+  walletId: {
+    _id: string;
+    balance: number;
+    status: TWalletStatus;
+  }
+}

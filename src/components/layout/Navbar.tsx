@@ -19,6 +19,12 @@ import { Menu } from "lucide-react";
 import { Link } from "react-router";
 import { Separator } from "../ui/separator";
 import { useEffect, useState } from "react";
+import {
+  authApi,
+  useLogoutMutation,
+  useUserInfoQuery,
+} from "@/redux/features/auth/auth";
+import { useAppDispatch } from "@/redux/hooks";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -31,6 +37,9 @@ const navLinks = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const { data, isLoading } = useUserInfoQuery(undefined);
+  const [logout] = useLogoutMutation();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const handleResize = () => {
@@ -47,9 +56,13 @@ export default function Navbar() {
       const el = document.querySelector(to);
       if (el) el.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.scrollTo(0, 0)
+      window.scrollTo(0, 0);
     }
-    
+  };
+
+  const handleLogout = async () => {
+    await logout(undefined);
+    dispatch(authApi.util.resetApiState());
   };
 
   return (
@@ -118,14 +131,29 @@ export default function Navbar() {
 
               <Separator className="my-2" />
               <div className="grid gap-3 mx-2">
-                <Link to="/login" onClick={() => setOpen(false)}>
-                  <Button className="w-full rounded-2xl">Login</Button>
-                </Link>
-                <Link to="/register" onClick={() => setOpen(false)}>
-                  <Button variant="secondary" className="w-full rounded-2xl">
-                    Create account
+                {isLoading && (
+                  <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+                )}
+                {!isLoading && data?.email && (
+                  <Button onClick={handleLogout} className="rounded-2xl">
+                    Logout
                   </Button>
-                </Link>
+                )}
+                {!isLoading && !data?.email && (
+                  <>
+                    <Link to="/login" onClick={() => setOpen(false)}>
+                      <Button className="w-full rounded-2xl">Login</Button>
+                    </Link>
+                    <Link to="/register" onClick={() => setOpen(false)}>
+                      <Button
+                        variant="secondary"
+                        className="w-full rounded-2xl"
+                      >
+                        Create account
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </div>
 
               <SheetHeader className="sr-only">
@@ -138,18 +166,26 @@ export default function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-2">
-          <Link to="/login">
-            <Button
-              variant="outline"
-              className="rounded-2xl"
-              aria-label="Login"
-            >
-              Login
+          {isLoading && (
+            <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+          )}
+          {!isLoading && data?.email && (
+            <Button onClick={handleLogout} className="rounded-2xl">
+              Logout
             </Button>
-          </Link>
-          <Link to="/register/user">
-            <Button className="rounded-2xl">Sign up</Button>
-          </Link>
+          )}
+          {!isLoading && !data?.email && (
+            <div className="hidden md:flex items-center gap-2">
+              <Link to="/login">
+                <Button variant="outline" className="rounded-2xl">
+                  Login
+                </Button>
+              </Link>
+              <Link to="/register/user">
+                <Button className="rounded-2xl">Sign up</Button>
+              </Link>
+            </div>
+          )}
           <ModeToggle />
         </div>
       </div>
