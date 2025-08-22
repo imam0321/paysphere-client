@@ -147,7 +147,7 @@ export default function Navbar() {
               Login
             </Button>
           </Link>
-          <Link to="/user/register">
+          <Link to="/register/user">
             <Button className="rounded-2xl">Sign up</Button>
           </Link>
           <ModeToggle />

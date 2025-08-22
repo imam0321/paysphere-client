@@ -6,14 +6,9 @@ import LoginForm from "@/components/modules/Authentication/LoginForm";
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/20 px-4 relative">
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="absolute top-4 left-6"
-      >
+      <div className="absolute top-4 left-6">
         <Logo />
-      </motion.div>
+      </div>
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}

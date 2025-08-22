@@ -22,7 +22,7 @@ export default function Pricing() {
         "View transaction history",
         "🎁 50 Tk bonus credited on registration",
       ],
-      cta: "Create account",
+      cta: "Register as User",
     },
     {
       name: "Agent",
@@ -79,7 +79,14 @@ export default function Pricing() {
               </CardContent>
 
               <CardFooter className="mt-auto">
-                <Link to="/auth/register" className="w-full">
+                <Link
+                  to={
+                    tier.cta === "Register as User"
+                      ? "/register/user"
+                      : "/register/agent"
+                  }
+                  className="w-full"
+                >
                   <Button
                     variant={tier.highlight ? "default" : "secondary"}
                     className="w-full rounded-2xl border"
