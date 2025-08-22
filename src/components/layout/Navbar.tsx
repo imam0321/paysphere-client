@@ -138,7 +138,7 @@ export default function Navbar() {
 
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-2">
-          <Link to="/auth/login">
+          <Link to="/login">
             <Button
               variant="outline"
               className="rounded-2xl"
@@ -147,7 +147,7 @@ export default function Navbar() {
               Login
             </Button>
           </Link>
-          <Link to="/auth/register">
+          <Link to="/user/register">
             <Button className="rounded-2xl">Sign up</Button>
           </Link>
           <ModeToggle />
