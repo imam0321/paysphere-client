@@ -1,3 +1,5 @@
+import type { ComponentType } from 'react';
+
 export type { IRegister, IRegisterResponse, ILogin, ILoginResponse, IUserResponse } from './auth';
 export type { ITransactionResponse } from "./transaction"
 export type { IWalletResponse } from './wallet';
@@ -16,4 +18,13 @@ export interface IResponse<T> {
   message: string;
   data: T;
   meta?: IMeta
+}
+
+export interface ISidebarItem {
+  title: string;
+  items: {
+    title: string;
+    url: string;
+    component: ComponentType;
+  }[];
 }
