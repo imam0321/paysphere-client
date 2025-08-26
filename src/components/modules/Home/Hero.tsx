@@ -2,16 +2,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Send, ShieldCheck, Users, Wallet, Zap } from "lucide-react";
-import { Link } from "react-router";
 import { motion } from "framer-motion";
 import TxRow from "./TxRow";
 import Stat from "./Stat";
 import QuickAction from "./QuickAction";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
-
+import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
 
 export default function Hero() {
-  const { data, isLoading } = useUserInfoQuery(undefined);
+  const { data } = useUserInfoQuery(undefined);
+  const { data: myTransaction } = useGetMyTransactionQuery(undefined);
 
   return (
     <section className="relative overflow-hidden">
@@ -36,16 +36,11 @@ export default function Hero() {
               for Users, Agents, and Admins—built with modern tech.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link to="/auth/register">
+              <a href="#features">
                 <Button size="lg" className="rounded-2xl">
-                  Create free account
-                </Button>
-              </Link>
-              <Link to="/features">
-                <Button size="lg" variant="secondary" className="rounded-2xl">
                   Explore features
                 </Button>
-              </Link>
+              </a>
             </div>
             <div className="flex items-center gap-6 pt-4 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -75,8 +70,11 @@ export default function Hero() {
                 </CardHeader>
                 <CardContent className="grid gap-4">
                   <div className="grid grid-cols-3 gap-3">
-                    <Stat label="Balance" value={data?.walletId?.balance as number} />
-                    <Stat label="Monthly Spend" value={0} />
+                    <Stat
+                      label="Balance"
+                      value={data?.walletId?.balance || 0}
+                    />
+                    <Stat label="Last Month Spend" value={0} />
                     <Stat label="Rewards" value={0} />
                   </div>
                   <div className="grid sm:grid-cols-3 gap-3">
@@ -98,8 +96,21 @@ export default function Hero() {
                       Recent transactions
                     </p>
                     <div className="grid gap-2">
-                      <TxRow label="To (Send)" amount="- 00" />
-                      <TxRow label="From (Deposit)" amount="+ 00" />
+                      {(myTransaction?.length ?? 0) > 0 ? (
+                        myTransaction
+                          ?.slice(0, myTransaction.length === 1 ? 1 : 2)
+                          .map((tx) => (
+                            <TxRow
+                              key={tx._id}
+                              label={tx.type}
+                              amount={tx.amount}
+                            />
+                          ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          No transactions found
+                        </p>
+                      )}
                     </div>
                   </div>
                 </CardContent>
@@ -112,5 +123,5 @@ export default function Hero() {
         </div>
       </div>
     </section>
-  )
+  );
 }

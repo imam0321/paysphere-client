@@ -1,5 +1,6 @@
-
 export type { IRegister, IRegisterResponse, ILogin, ILoginResponse, IUserResponse } from './auth';
+export type { ITransactionResponse } from "./transaction"
+export type { IWalletResponse } from './wallet';
 
 
 export interface IMeta {
