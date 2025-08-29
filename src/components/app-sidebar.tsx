@@ -27,12 +27,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <Link
-          to="/"
-          className="flex items-center gap-1 text-primary hover:text-primary/90"
-        >
-          <Logo/>
-        </Link>
+        <Logo />
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}

@@ -1,15 +1,15 @@
 import { lazy } from "react";
 import type { ISidebarItem } from "@/types";
-const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
+const WalletPage = lazy(() => import("@/pages/WalletPage"));
 
 export const userSidebarItems: ISidebarItem[] = [
   {
     title: "Dashboard",
     items: [
       {
-        title: "Analytics",
-        url: "/user/analytics",
-        component: Analytics,
+        title: "Wallet",
+        url: "/user/wallet",
+        component: WalletPage,
       },
     ],
   },

@@ -9,6 +9,7 @@ export const transactionApi = baseApi.injectEndpoints({
         method: "GET",
         params
       }),
+      providesTags: ["TRANSACTION"],
       transformResponse: (res: IResponse<ITransactionResponse[]>) => res.data
     }),
     getSingleTransaction: builder.query<ITransactionResponse, unknown>({
@@ -16,6 +17,7 @@ export const transactionApi = baseApi.injectEndpoints({
         url: `/transaction/${id}`,
         method: "GET",
       }),
+      providesTags: ["TRANSACTION"],
       transformResponse: (res: IResponse<ITransactionResponse>) => res.data
     })
 

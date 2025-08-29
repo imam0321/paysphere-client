@@ -8,13 +8,16 @@ export default function DashboardLayout() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4">
+        <header className="flex h-16 shrink-0 justify-between items-center gap-2 border-b px-4 sticky top-0 bg-background z-50">
           <SidebarTrigger className="-ml-1" />
-          <ModeToggle />
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+          </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        
+        <main className="flex flex-1 flex-col gap-4 p-4 max-w-7xl mx-auto w-full">
           <Outlet />
-        </div>
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );

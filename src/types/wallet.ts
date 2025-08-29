@@ -15,3 +15,21 @@ export interface UserId {
   name: string
   role: TRole
 }
+
+export interface IAddMoney {
+  amount: number
+}
+
+export type TTransactionType = "add_money" | "send_money"
+
+export interface IMoneyResponse {
+  _id: string
+  toWalletId: string
+  type: TTransactionType
+  amount: number
+  currentBalance: number
+  initiatedBy: string
+  purpose: string
+  createdAt: string
+  updatedAt: string
+}

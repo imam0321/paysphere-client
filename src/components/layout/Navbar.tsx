@@ -25,14 +25,18 @@ import {
   useUserInfoQuery,
 } from "@/redux/features/auth/auth";
 import { useAppDispatch } from "@/redux/hooks";
+import { role } from "@/constants/role";
 
 const navLinks = [
-  { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
-  { to: "#features", label: "Features" },
-  { to: "#pricing", label: "Pricing" },
-  { to: "#contact", label: "Contact" },
-  { to: "#faq", label: "FAQ" },
+  { to: "/", label: "Home", role: "PUBLIC" },
+  { to: "/about", label: "About", role: "PUBLIC" },
+  { to: "#features", label: "Features", role: "PUBLIC" },
+  { to: "#pricing", label: "Pricing", role: "PUBLIC" },
+  { to: "#contact", label: "Contact", role: "PUBLIC" },
+  { to: "#faq", label: "FAQ", role: "PUBLIC" },
+  { to: "/admin", label: "Dashboard", role: role.admin },
+  { to: "/agent", label: "Dashboard", role: role.agent },
+  { to: "/user", label: "Dashboard", role: role.user },
 ];
 
 export default function Navbar() {
@@ -75,17 +79,34 @@ export default function Navbar() {
           <NavigationMenu>
             <NavigationMenuList className="flex items-center gap-1">
               {navLinks.map((link, index) => (
-                <NavigationMenuItem key={index}>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to={link.to.startsWith("#") ? "/" : link.to}
-                      onClick={() => handleScroll(link.to)}
-                      className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
-                    >
-                      {link.label}
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
+                <>
+                  {link.role === "PUBLIC" && (
+                    <NavigationMenuItem key={index}>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to={link.to.startsWith("#") ? "/" : link.to}
+                          onClick={() => handleScroll(link.to)}
+                          className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
+                        >
+                          {link.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  )}
+                  {link.role === data?.role && (
+                    <NavigationMenuItem key={index}>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to={link.to.startsWith("#") ? "/" : link.to}
+                          onClick={() => handleScroll(link.to)}
+                          className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
+                        >
+                          {link.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  )}
+                </>
               ))}
             </NavigationMenuList>
           </NavigationMenu>

@@ -35,6 +35,7 @@ export const authApi = baseApi.injectEndpoints({
         url: "/auth/me",
         method: "GET",
       }),
+      providesTags: ["WALLET", "TRANSACTION"],
       transformResponse: (res:  IResponse<IUserResponse>) => res.data
     })
 
