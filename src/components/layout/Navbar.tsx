@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Logo from "@/assets/icons/Logo";
 import {
   NavigationMenu,
@@ -26,6 +27,8 @@ import {
 } from "@/redux/features/auth/auth";
 import { useAppDispatch } from "@/redux/hooks";
 import { role } from "@/constants/role";
+import LogoutButton from "../modules/Authentication/LogoutButton";
+import { toast } from "sonner";
 
 const navLinks = [
   { to: "/", label: "Home", role: "PUBLIC" },
@@ -65,8 +68,12 @@ export default function Navbar() {
   };
 
   const handleLogout = async () => {
-    await logout(undefined);
-    dispatch(authApi.util.resetApiState());
+    try {
+      await logout(undefined);
+      dispatch(authApi.util.resetApiState());
+    } catch (error: any) {
+      toast.error(error.data.message);
+    }
   };
 
   return (
@@ -155,10 +162,11 @@ export default function Navbar() {
                 {isLoading && (
                   <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
                 )}
+                {/* {!isLoading && data?.email && (
+                  
+                )} */}
                 {!isLoading && data?.email && (
-                  <Button onClick={handleLogout} className="rounded-2xl">
-                    Logout
-                  </Button>
+                  <LogoutButton onLogout={handleLogout} />
                 )}
                 {!isLoading && !data?.email && (
                   <>
@@ -191,9 +199,7 @@ export default function Navbar() {
             <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
           )}
           {!isLoading && data?.email && (
-            <Button onClick={handleLogout} className="rounded-2xl">
-              Logout
-            </Button>
+            <LogoutButton onLogout={handleLogout} />
           )}
           {!isLoading && !data?.email && (
             <div className="hidden md:flex items-center gap-2">
