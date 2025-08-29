@@ -1,18 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Send, ShieldCheck, Users, Wallet, Zap } from "lucide-react";
+import { ShieldCheck, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import TxRow from "./TxRow";
-import Stat from "./Stat";
-import QuickAction from "./QuickAction";
-import { useUserInfoQuery } from "@/redux/features/auth/auth";
-import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
+import WalletPage from "@/pages/WalletPage";
 
 export default function Hero() {
-  const { data } = useUserInfoQuery(undefined);
-  const { data: myTransaction } = useGetMyTransactionQuery(undefined);
-
   return (
     <section className="relative overflow-hidden">
       <div className="absolute -z-10 inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-fuchsia-200/50 via-white to-transparent dark:from-fuchsia-900/20" />
@@ -54,72 +46,7 @@ export default function Hero() {
               </div>
             </div>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
-            <div className="relative">
-              <div className="absolute -top-6 -left-6 h-24 w-24 rounded-full bg-fuchsia-500/20 blur-2xl" />
-              <div className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-violet-500/20 blur-2xl" />
-              <Card className="rounded-3xl shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Wallet className="h-5 w-5" /> PaySphere Wallet
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-4">
-                  <div className="grid grid-cols-3 gap-3">
-                    <Stat
-                      label="Balance"
-                      value={data?.walletId?.balance || 0}
-                    />
-                    <Stat label="Last Month Spend" value={0} />
-                    <Stat label="Rewards" value={0} />
-                  </div>
-                  <div className="grid sm:grid-cols-3 gap-3">
-                    <QuickAction
-                      icon={<Send className="h-4 w-4" />}
-                      label="Send"
-                    />
-                    <QuickAction
-                      icon={<Wallet className="h-4 w-4" />}
-                      label="Deposit"
-                    />
-                    <QuickAction
-                      icon={<ShieldCheck className="h-4 w-4" />}
-                      label="Withdraw"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-2">
-                      Recent transactions
-                    </p>
-                    <div className="grid gap-2">
-                      {(myTransaction?.length ?? 0) > 0 ? (
-                        myTransaction
-                          ?.slice(0, myTransaction.length === 1 ? 1 : 2)
-                          .map((tx) => (
-                            <TxRow
-                              key={tx._id}
-                              label={tx.type}
-                              amount={tx.amount}
-                            />
-                          ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground">
-                          No transactions found
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="sr-only">
-                  data for illustration.
-                </CardFooter>
-              </Card>
-            </div>
-          </motion.div>
+          <WalletPage />
         </div>
       </div>
     </section>
