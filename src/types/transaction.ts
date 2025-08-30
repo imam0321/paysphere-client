@@ -15,7 +15,7 @@ export interface ITransactionResponse {
 }
 
 export interface InitiatedBy {
-  _id: string
-  name: string
-  role: TRole
+  _id?: string
+  name?: string
+  role?: TRole
 }

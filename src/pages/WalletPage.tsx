@@ -5,16 +5,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Wallet } from "lucide-react";
+import { Send, ShieldCheck, Wallet } from "lucide-react";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
 import Stat from "@/components/modules/Home/Stat";
-// import QuickAction from "@/components/modules/Home/QuickAction";
 import AddMoney from "@/components/modules/User/AddMoney";
 import RecentTransaction from "@/components/modules/Transaction/RecentTransaction";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import SendMoney from "@/components/modules/User/SendMoney";
 import WithdrawMoney from "@/components/modules/User/WithdrawMoney";
+import QuickAction from "@/components/modules/Home/QuickAction";
 
 export default function WalletPage() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -45,7 +45,10 @@ export default function WalletPage() {
                 </>
               ) : (
                 <>
-                  <Stat label="Balance" value={Number((data?.walletId?.balance ?? 0).toFixed(2))} />
+                  <Stat
+                    label="Balance"
+                    value={Number((data?.walletId?.balance ?? 0).toFixed(2))}
+                  />
                   <Stat label="Last Month Spend" value={0} />
                   <Stat label="Rewards" value={0} />
                 </>
@@ -67,10 +70,23 @@ export default function WalletPage() {
                       <WithdrawMoney />
                     </>
                   )}
-                  {/* <QuickAction
-                    icon={<ShieldCheck className="h-4 w-4" />}
-                    label="Withdraw"
-                  /> */}
+
+                  {!data && (
+                    <>
+                      <QuickAction
+                        icon={<Send className="h-4 w-4" />}
+                        label="Send"
+                      />
+                      <QuickAction
+                        icon={<Wallet className="h-4 w-4" />}
+                        label="Deposit"
+                      />
+                      <QuickAction
+                        icon={<ShieldCheck className="h-4 w-4" />}
+                        label="Withdraw"
+                      />
+                    </>
+                  )}
                 </>
               )}
             </div>

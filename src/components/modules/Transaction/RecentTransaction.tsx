@@ -25,37 +25,40 @@ export default function RecentTransaction() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading
-              ? Array(3)
-                  .fill(0)
-                  .map((_, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell colSpan={3}>
-                        <Skeleton className="h-6 w-full rounded animate-pulse" />
-                      </TableCell>
-                    </TableRow>
-                  ))
-              : myTransaction && myTransaction.length > 0
-              ? myTransaction
-                  .slice(0, myTransaction.length === 1 ? 1 : 2)
-                  .map((tx) => (
-                    <TableRow key={tx._id} className="hover:bg-muted">
-                      <TableCell>
-                        {new Date(tx.createdAt).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell className="truncate">{tx.type}</TableCell>
-                      <TableCell className="text-right font-medium">
-                        {tx.amount} Tk
-                      </TableCell>
-                    </TableRow>
-                  ))
-              : (
-                <TableRow>
-                  <TableCell colSpan={3} className="text-center text-sm text-muted-foreground">
-                    No transactions found
-                  </TableCell>
-                </TableRow>
-              )}
+            {isLoading ? (
+              Array(3)
+                .fill(0)
+                .map((_, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell colSpan={3}>
+                      <Skeleton className="h-6 w-full rounded animate-pulse" />
+                    </TableCell>
+                  </TableRow>
+                ))
+            ) : myTransaction && myTransaction?.data.length > 0 ? (
+              myTransaction?.data
+                .slice(0, myTransaction?.data?.length === 1 ? 1 : 2)
+                .map((tx) => (
+                  <TableRow key={tx._id} className="hover:bg-muted">
+                    <TableCell>
+                      {new Date(tx.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="truncate">{tx.type}</TableCell>
+                    <TableCell className="text-right font-medium">
+                      {tx.amount} Tk
+                    </TableCell>
+                  </TableRow>
+                ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-center text-sm text-muted-foreground"
+                >
+                  No transactions found
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
