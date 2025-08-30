@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Wallet } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,48 +15,54 @@ import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { useAddMoneyMutation } from "@/redux/features/wallet/wallet";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
+import { useGetAllUserQuery } from "@/redux/features/user/user";
+import SearchPhone from "@/components/SearchPhone";
+import { useSendMoneyMutation } from "@/redux/features/wallet/wallet";
 
-const formSchema = z.object({
-  amount: z.coerce
-    .number({ error: "Please enter at least 10 TK" })
-    .min(10, "You must enter at least 10 TK"),
-});
-
-type TFormValues = z.infer<typeof formSchema>;
-
-export default function AddMoney() {
+export default function SendMoney() {
   const [open, setOpen] = useState(false);
-  const [addMoney] = useAddMoneyMutation();
 
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: { amount: 0 },
+  const { data: usersData } = useGetAllUserQuery({
+    fields: "phone,walletId",
   });
 
-  const onSubmit = async (data: TFormValues) => {
-    const toastId = toast.loading("Adding money...");
+  const [sendMoney] = useSendMoneyMutation();
+
+  const users = usersData?.data.map((item: any) => ({
+    phone: item.phone,
+    walletId: item.walletId,
+  }));
+
+  const form = useForm({
+    defaultValues: {
+      walletId: "",
+      amount: 0,
+    },
+});
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const sendData = {
+      ...data,
+      amount: Number(data.amount),
+    };
+
+    const toastId = toast.loading("Sending money...");
 
     try {
-      await addMoney({ amount: data.amount }).unwrap();
-      toast.success("Money added successfully!", { id: toastId });
-      form.reset({ amount: 0 });
+      await sendMoney(sendData).unwrap();
+      toast.success("Money sent successfully!", { id: toastId });
       setOpen(false);
+      form.reset({walletId: "", amount: 0})
     } catch (error: any) {
-      toast.error(error?.data?.message || "Something went wrong", {
-        id: toastId,
-      });
+      toast.error(error?.data?.message || "Something went wrong", { id: toastId });
     }
   };
 
@@ -67,8 +73,8 @@ export default function AddMoney() {
           variant="secondary"
           className="rounded-2xl justify-start gap-2 w-full"
         >
-          <Wallet className="h-4 w-4" />
-          Add Money
+          <Send className="h-4 w-4" />
+          Send Money
         </Button>
       </DialogTrigger>
 
@@ -79,12 +85,28 @@ export default function AddMoney() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <DialogHeader>
-              <DialogTitle>Add Money</DialogTitle>
+              <DialogTitle>Send Money</DialogTitle>
               <DialogDescription>
-                Enter the amount you want to deposit in your wallet
+                Enter user phone number & amount to send money.
               </DialogDescription>
             </DialogHeader>
 
+            {/* Phone number search field */}
+            <FormField
+              control={form.control}
+              name="walletId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <FormControl>
+                    <SearchPhone field={field} users={users || []} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Amount input */}
             <FormField
               control={form.control}
               name="amount"
@@ -94,16 +116,13 @@ export default function AddMoney() {
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Enter deposit amount"
+                      placeholder="Enter amount"
                       {...field}
                       min={10}
                       value={field.value as number}
                       onChange={(e) => field.onChange(e.target.valueAsNumber)}
                     />
                   </FormControl>
-                  <FormDescription className="sr-only">
-                    Minimum 1 unit required to deposit
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -113,7 +132,7 @@ export default function AddMoney() {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button type="submit">Add Money</Button>
+              <Button type="submit">Send</Button>
             </DialogFooter>
           </form>
         </Form>

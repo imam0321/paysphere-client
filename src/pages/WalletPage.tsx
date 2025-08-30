@@ -13,6 +13,7 @@ import AddMoney from "@/components/modules/User/AddMoney";
 import RecentTransaction from "@/components/modules/Transaction/RecentTransaction";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import SendMoney from "@/components/modules/User/SendMoney";
 
 export default function WalletPage() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -58,11 +59,12 @@ export default function WalletPage() {
                 </>
               ) : (
                 <>
-                  {data?.role === "user" && <AddMoney />}
-                  <QuickAction
-                    icon={<Wallet className="h-4 w-4" />}
-                    label="Add Money"
-                  />
+                  {data?.role === "user" && (
+                    <>
+                        <AddMoney />
+                        <SendMoney />
+                    </>
+                  )}
                   <QuickAction
                     icon={<ShieldCheck className="h-4 w-4" />}
                     label="Withdraw"
