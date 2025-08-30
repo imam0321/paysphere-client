@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Send } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,20 +23,20 @@ import {
 import { toast } from "sonner";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
-import { useGetAllUserQuery } from "@/redux/features/user/user";
 import SearchPhone from "@/components/SearchPhone";
-import { useSendMoneyMutation } from "@/redux/features/wallet/wallet";
+import { useWithdrawMoneyMutation } from "@/redux/features/wallet/wallet";
+import { useGetAllAgentQuery } from "@/redux/features/agent/agent";
 
-export default function SendMoney() {
+export default function WithdrawMoney() {
   const [open, setOpen] = useState(false);
 
-  const { data: usersData } = useGetAllUserQuery({
+  const { data: agentData } = useGetAllAgentQuery({
     fields: "phone,walletId",
   });
 
-  const [sendMoney] = useSendMoneyMutation();
+  const [withdrawMoney] = useWithdrawMoneyMutation();
 
-  const users = usersData?.data.map((item: any) => ({
+  const agents = agentData?.data.map((item: any) => ({
     phone: item.phone,
     walletId: item.walletId,
   }));
@@ -46,23 +46,26 @@ export default function SendMoney() {
       walletId: "",
       amount: 0,
     },
-});
+  });
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    const sendData = {
+    const withdrawData = {
       ...data,
       amount: Number(data.amount),
     };
 
-    const toastId = toast.loading("Sending money...");
+    const toastId = toast.loading("Withdraw money...");
 
     try {
-      await sendMoney(sendData).unwrap();
-      toast.success("Money sent successfully!", { id: toastId });
+      await withdrawMoney(withdrawData).unwrap();
+      toast.success("Withdraw money successfully!", { id: toastId });
       setOpen(false);
-      form.reset({walletId: "", amount: 0})
+      form.reset({ walletId: "", amount: 0 });
     } catch (error: any) {
-      toast.error(error?.data?.message || "Something went wrong", { id: toastId });
+      toast.error(error?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
+      console.log(error);
     }
   };
 
@@ -73,8 +76,8 @@ export default function SendMoney() {
           variant="secondary"
           className="rounded-2xl justify-start gap-2 w-full"
         >
-          <Send className="h-4 w-4" />
-          Send Money
+          <ShieldCheck className="h-4 w-4" />
+          Withdraw Money
         </Button>
       </DialogTrigger>
 
@@ -85,9 +88,9 @@ export default function SendMoney() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <DialogHeader>
-              <DialogTitle>Send Money</DialogTitle>
+              <DialogTitle>Withdraw Money</DialogTitle>
               <DialogDescription>
-                Enter user phone number & amount to send money.
+                Enter agent phone number & amount to withdraw money.
               </DialogDescription>
             </DialogHeader>
 
@@ -100,7 +103,7 @@ export default function SendMoney() {
                 <FormItem>
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
-                    <SearchPhone field={field} users={users || []} />
+                    <SearchPhone field={field} users={agents || []} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,7 +140,7 @@ export default function SendMoney() {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button type="submit">Send</Button>
+              <Button type="submit">Withdraw</Button>
             </DialogFooter>
           </form>
         </Form>
