@@ -9,17 +9,22 @@ export default function Password({ ...field }) {
 
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
+  const defaultPlaceholder =
+    field.name === "oldPassword"
+      ? "Enter your old password"
+      : field.name === "newPassword"
+      ? "Enter your new password"
+      : field.name === "confirmPassword"
+      ? "Confirm your password"
+      : "Enter your password";
+
   return (
     <div className="*:not-first:mt-2">
       <div className="relative">
         <Input
           id={id}
           className="pe-9 w-full"
-          placeholder={
-            field.name === "confirmPassword"
-              ? "Enter your confirm password"
-              : "Enter your password"
-          }
+          placeholder={defaultPlaceholder}
           {...field}
           type={isVisible ? "text" : "password"}
         />

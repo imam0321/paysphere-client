@@ -26,6 +26,7 @@ import { useState } from "react";
 import SearchPhone from "@/components/SearchPhone";
 import { useWithdrawMoneyMutation } from "@/redux/features/wallet/wallet";
 import { useGetAllAgentQuery } from "@/redux/features/agent/agent";
+import { useUserInfoQuery } from "@/redux/features/auth/auth";
 
 export default function WithdrawMoney() {
   const [open, setOpen] = useState(false);
@@ -35,11 +36,14 @@ export default function WithdrawMoney() {
   });
 
   const [withdrawMoney] = useWithdrawMoneyMutation();
+  const { data: myInfo } = useUserInfoQuery();
 
-  const agents = agentData?.data.map((item: any) => ({
-    phone: item.phone,
-    walletId: item.walletId,
-  }));
+  const agents = agentData?.data
+    .filter((item: { phone: string }) => item.phone !== myInfo?.phone)
+    .map((item: any) => ({
+      phone: item.phone,
+      walletId: item.walletId,
+    }));
 
   const form = useForm({
     defaultValues: {

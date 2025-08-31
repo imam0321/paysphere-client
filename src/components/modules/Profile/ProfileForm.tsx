@@ -22,7 +22,6 @@ import {
   useUserInfoQuery,
 } from "@/redux/features/auth/auth";
 
-// Zod schema
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().min(10, "Enter a valid phone number"),
@@ -55,7 +54,7 @@ export default function ProfileForm() {
     }
   }, [userInfo, form]);
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: z.infer<typeof profileSchema>) => {
     if (!userInfo?._id) return;
 
     setIsSaving(true);

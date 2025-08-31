@@ -26,6 +26,7 @@ import { useState } from "react";
 import { useGetAllUserQuery } from "@/redux/features/user/user";
 import SearchPhone from "@/components/SearchPhone";
 import { useSendMoneyMutation } from "@/redux/features/wallet/wallet";
+import { useUserInfoQuery } from "@/redux/features/auth/auth";
 
 export default function SendMoney() {
   const [open, setOpen] = useState(false);
@@ -33,20 +34,23 @@ export default function SendMoney() {
   const { data: usersData } = useGetAllUserQuery({
     fields: "phone,walletId",
   });
+  const { data: myInfo } = useUserInfoQuery();
 
   const [sendMoney] = useSendMoneyMutation();
 
-  const users = usersData?.data.map((item: any) => ({
-    phone: item.phone,
-    walletId: item.walletId,
-  }));
+  const users = usersData?.data
+    .filter((item: { phone: string }) => item.phone !== myInfo?.phone)
+    .map((item: any) => ({
+      phone: item.phone,
+      walletId: item.walletId,
+    }));
 
   const form = useForm({
     defaultValues: {
       walletId: "",
       amount: 0,
     },
-});
+  });
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const sendData = {
@@ -60,9 +64,11 @@ export default function SendMoney() {
       await sendMoney(sendData).unwrap();
       toast.success("Money sent successfully!", { id: toastId });
       setOpen(false);
-      form.reset({walletId: "", amount: 0})
+      form.reset({ walletId: "", amount: 0 });
     } catch (error: any) {
-      toast.error(error?.data?.message || "Something went wrong", { id: toastId });
+      toast.error(error?.data?.message || "Something went wrong", {
+        id: toastId,
+      });
     }
   };
 

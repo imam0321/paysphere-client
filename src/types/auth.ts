@@ -87,11 +87,11 @@ export interface IUserResponse {
   transactionId: string[]
   createdAt: string;
   updatedAt: string;
-  walletId: {
-    _id: string;
-    balance: number;
-    status: TWalletStatus;
-  }
+  walletId?: {
+    _id?: string;
+    balance?: number;
+    status?: TWalletStatus;
+  } | string
 }
 
 export interface IUserUpdate {

@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ProfileForm from "@/components/modules/Profile/ProfileForm";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
+import ChangePasswordForm from "@/components/modules/Authentication/ChangePasswordForm";
 
 export default function ProfilePage() {
   const { data: userInfo } = useUserInfoQuery();
@@ -69,13 +70,11 @@ export default function ProfilePage() {
 
             {/* Settings Tab */}
             <TabsContent value="settings">
-              <div className="space-y-4">
+               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">
-                  Account Settings
+                  Change Password
                 </h3>
-                <p className="text-muted-foreground text-sm">
-                  Manage your account settings and change your password here.
-                </p>
+                <ChangePasswordForm />
               </div>
             </TabsContent>
           </Tabs>
