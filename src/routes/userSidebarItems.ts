@@ -14,12 +14,12 @@ export const userSidebarItems: ISidebarItem[] = [
         component: ProfilePage,
       },
       {
-        title: "Wallet",
+        title: "My Wallet",
         url: "/user/wallet",
         component: WalletPage,
       },
       {
-        title: "Transaction History",
+        title: "My Transaction",
         url: "/user/transaction",
         component: TransactionPage,
       },

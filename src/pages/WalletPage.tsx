@@ -15,6 +15,8 @@ import { motion } from "framer-motion";
 import SendMoney from "@/components/modules/User/SendMoney";
 import WithdrawMoney from "@/components/modules/User/WithdrawMoney";
 import QuickAction from "@/components/modules/Home/QuickAction";
+import CashIn from "@/components/modules/Agent/CashIn";
+import CashOut from "@/components/modules/Agent/CashOut";
 
 export default function WalletPage() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -54,7 +56,7 @@ export default function WalletPage() {
                 </>
               )}
             </div>
-            <div className="grid sm:grid-cols-3 gap-3">
+            <>
               {isLoading ? (
                 <>
                   <Skeleton className="h-12 w-full rounded-2xl animate-pulse" />
@@ -64,15 +66,21 @@ export default function WalletPage() {
               ) : (
                 <>
                   {data?.role === "user" && (
-                    <>
+                    <div className="grid sm:grid-cols-3 gap-3">
                       <AddMoney />
                       <SendMoney />
                       <WithdrawMoney />
-                    </>
+                    </div>
+                  )}
+                  {data?.role === "agent" && (
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <CashIn />
+                      <CashOut />
+                    </div>
                   )}
 
                   {!data && (
-                    <>
+                    <div className="grid sm:grid-cols-3 gap-3">
                       <QuickAction
                         icon={<Send className="h-4 w-4" />}
                         label="Send"
@@ -85,11 +93,11 @@ export default function WalletPage() {
                         icon={<ShieldCheck className="h-4 w-4" />}
                         label="Withdraw"
                       />
-                    </>
+                    </div>
                   )}
                 </>
               )}
-            </div>
+            </>
             <RecentTransaction />
           </CardContent>
           <CardFooter className="sr-only">data for illustration.</CardFooter>

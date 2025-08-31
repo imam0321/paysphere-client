@@ -91,7 +91,7 @@ export interface IUserResponse {
     _id?: string;
     balance?: number;
     status?: TWalletStatus;
-  } | string
+  }
 }
 
 export interface IUserUpdate {

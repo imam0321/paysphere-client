@@ -1,5 +1,6 @@
-import AnalyticsPage from "@/pages/Agent/AnalyticsPage";
 import ProfilePage from "@/pages/ProfilePage";
+import TransactionPage from "@/pages/TransactionPage";
+import WalletPage from "@/pages/WalletPage";
 import type { ISidebarItem } from "@/types";
 
 export const agentSidebarItems: ISidebarItem[] = [
@@ -12,9 +13,14 @@ export const agentSidebarItems: ISidebarItem[] = [
         component: ProfilePage,
       },
       {
-        title: "Analytics",
-        url: "/agent/analytics",
-        component: AnalyticsPage,
+        title: "My Wallet",
+        url: "/agent/wallet",
+        component: WalletPage,
+      },
+      {
+        title: "My Transaction",
+        url: "/agent/transaction",
+        component: TransactionPage,
       },
     ],
   },
