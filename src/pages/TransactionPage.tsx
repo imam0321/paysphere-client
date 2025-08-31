@@ -25,13 +25,18 @@ import {
 } from "@/components/ui/pagination";
 import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TransactionPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [page, setPage] = useState(1);
   const limit = 8;
 
-  const { data: transactionData } = useGetMyTransactionQuery({ page, limit });
+  const { data: transactionData, isLoading } = useGetMyTransactionQuery({
+    page,
+    limit,
+  });
+
   const transactions = transactionData?.data || [];
   const meta = transactionData?.meta;
 
@@ -75,7 +80,28 @@ export default function TransactionPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredTransactions.length > 0 ? (
+              {isLoading ? (
+                // Skeleton Rows
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell>
+                      <Skeleton className="h-4 w-32" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-24" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-20" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-20" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-24" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : filteredTransactions.length > 0 ? (
                 filteredTransactions.map((tx) => (
                   <TableRow key={tx._id}>
                     <TableCell>
@@ -98,7 +124,7 @@ export default function TransactionPage() {
           </Table>
 
           {/* Pagination */}
-          {meta && (
+          {!isLoading && meta && (
             <Pagination className="mt-4">
               <PaginationContent>
                 <PaginationItem>

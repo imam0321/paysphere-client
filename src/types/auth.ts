@@ -54,6 +54,8 @@ export interface User {
   email: string;
   role: TRole;
   phone: string;
+  address?: string;
+  picture?: string;
   feeRate?: number;
   commissionRate?: number;
   isActive: TActive;
@@ -75,6 +77,8 @@ export interface IUserResponse {
   role: TRole;
   phone: string;
   feeRate?: number;
+  address?: string;
+  picture?: string;
   commissionRate?: number;
   isActive: TActive;
   isApproved: boolean;
@@ -88,4 +92,17 @@ export interface IUserResponse {
     balance: number;
     status: TWalletStatus;
   }
+}
+
+export interface IUserUpdate {
+  name?: string;
+  phone?: string;
+  feeRate?: number;
+  address?: string;
+  picture?: string;
+  commissionRate?: number;
+  isActive?: TActive;
+  isApproved?: boolean;
+  isVerified?: boolean;
+  isDeleted?: boolean;
 }

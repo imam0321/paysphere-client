@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function QuickAction({
   icon,
@@ -8,9 +9,15 @@ export default function QuickAction({
   label: string;
 }) {
   return (
-    <Button variant="secondary" className="rounded-2xl justify-start gap-2">
-      {icon}
-      {label}
+    <Button
+      asChild
+      variant="secondary"
+      className="rounded-2xl justify-start gap-2"
+    >
+      <Link to="/login">
+        {icon}
+        {label}
+      </Link>
     </Button>
   );
 }
