@@ -21,12 +21,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import SearchPhone from "@/components/SearchPhone";
 import { useWithdrawMoneyMutation } from "@/redux/features/wallet/wallet";
 import { useGetAllAgentQuery } from "@/redux/features/agent/agent";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const withdrawMoneySchema = z.object({
+  walletId: z.string().min(1, "Phone number is required"),
+  amount: z
+    .number({ error: "Amount is required" })
+    .min(10, "Amount must be at least 10"),
+});
+
+type TFormValues = z.infer<typeof withdrawMoneySchema>;
 
 export default function WithdrawMoney() {
   const [open, setOpen] = useState(false);
@@ -45,14 +56,15 @@ export default function WithdrawMoney() {
       walletId: item.walletId,
     }));
 
-  const form = useForm({
+  const form = useForm<TFormValues>({
+    resolver: zodResolver(withdrawMoneySchema),
     defaultValues: {
       walletId: "",
       amount: 0,
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit = async (data: TFormValues) => {
     const withdrawData = {
       ...data,
       amount: Number(data.amount),
