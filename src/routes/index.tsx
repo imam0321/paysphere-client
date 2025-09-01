@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
     Component: withAuth(DashboardLayout, role.agent as TRole),
     path: "/agent",
     children: [
-      { index: true, element: <Navigate to="/agent/me" /> },
+      { index: true, element: <Navigate to="/agent/wallet" /> },
       ...generateRoutes(agentSidebarItems),
     ],
   },

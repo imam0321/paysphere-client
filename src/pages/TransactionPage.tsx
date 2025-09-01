@@ -26,12 +26,15 @@ import {
 import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useUserInfoQuery } from "@/redux/features/auth/auth";
+import { role } from "@/constants/role";
 
 export default function TransactionPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [page, setPage] = useState(1);
   const limit = 8;
 
+  const { data: userInfo } = useUserInfoQuery();
   const { data: transactionData, isLoading } = useGetMyTransactionQuery({
     page,
     limit,
@@ -60,10 +63,22 @@ export default function TransactionPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="add_money">Add Money</SelectItem>
-                <SelectItem value="withdraw">Withdraw</SelectItem>
-                <SelectItem value="send_money">Send Money</SelectItem>
-                <SelectItem value="receive_money">Receive Money</SelectItem>
+                {userInfo?.role === role.user && (
+                  <>
+                    <SelectItem value="add_money">Add Money</SelectItem>
+                    <SelectItem value="withdraw">Withdraw</SelectItem>
+                    <SelectItem value="send_money">Send Money</SelectItem>
+                    <SelectItem value="receive_money">Receive Money</SelectItem>
+                  </>
+                )}
+                {userInfo?.role === role.agent && (
+                  <>
+                    <SelectItem value="withdraw">Withdraw</SelectItem>
+                    <SelectItem value="send_money">Send Money</SelectItem>
+                    <SelectItem value="cash_in">Cash In</SelectItem>
+                    <SelectItem value="cash_out">Cash Out</SelectItem>
+                  </>
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -124,9 +139,10 @@ export default function TransactionPage() {
           </Table>
 
           {/* Pagination */}
-          {!isLoading && meta && (
+          {!isLoading && meta && meta.totalPage > 1 && (
             <Pagination className="mt-4">
               <PaginationContent>
+                {/* Previous Button */}
                 <PaginationItem>
                   <PaginationPrevious
                     href="#"
@@ -134,24 +150,32 @@ export default function TransactionPage() {
                       e.preventDefault();
                       if (page > 1) setPage(page - 1);
                     }}
+                    className={
+                      page === 1 ? "pointer-events-none opacity-50" : ""
+                    }
                   />
                 </PaginationItem>
 
-                {[...Array(meta.totalPage)].map((_, index) => (
-                  <PaginationItem key={index}>
-                    <PaginationLink
-                      href="#"
-                      isActive={page === index + 1}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setPage(index + 1);
-                      }}
-                    >
-                      {index + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
+                {/* Page Numbers */}
+                {[...Array(meta.totalPage)].map((_, index) => {
+                  const pageNumber = index + 1;
+                  return (
+                    <PaginationItem key={pageNumber}>
+                      <PaginationLink
+                        href="#"
+                        isActive={page === pageNumber}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setPage(pageNumber);
+                        }}
+                      >
+                        {pageNumber}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                })}
 
+                {/* Next Button */}
                 <PaginationItem>
                   <PaginationNext
                     href="#"
@@ -159,6 +183,11 @@ export default function TransactionPage() {
                       e.preventDefault();
                       if (page < meta.totalPage) setPage(page + 1);
                     }}
+                    className={
+                      page === meta.totalPage
+                        ? "pointer-events-none opacity-50"
+                        : ""
+                    }
                   />
                 </PaginationItem>
               </PaginationContent>
