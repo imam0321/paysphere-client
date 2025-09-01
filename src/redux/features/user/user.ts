@@ -10,7 +10,7 @@ export const userApi = baseApi.injectEndpoints({
         method: "GET",
         params
       }),
-      providesTags: ["USER"],
+      providesTags: ["USER", "WALLET"],
     })
 
   }),

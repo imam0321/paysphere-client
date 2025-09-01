@@ -8,8 +8,8 @@ export type { IWalletResponse, IAddMoney, IMoneyResponse } from './wallet';
 export interface IMeta {
   page: number
   limit: number
+  total: number,
   totalPage: number
-  totalDocument: number
 }
 
 export interface IResponse<T> {
