@@ -75,6 +75,13 @@ export default function TransactionPage() {
                     <SelectItem value="cash_out">Cash Out</SelectItem>
                   </>
                 )}
+                {userInfo?.role === role.admin && (
+                  <>
+                    <SelectItem value="fee">Fee</SelectItem>
+                    <SelectItem value="send_money">Send Money</SelectItem>
+                    <SelectItem value="add_money">Add money</SelectItem>
+                  </>
+                )}
               </SelectContent>
             </Select>
           </div>

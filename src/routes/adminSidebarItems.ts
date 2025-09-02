@@ -3,6 +3,7 @@ import type { ISidebarItem } from "@/types";
 import ProfilePage from "@/pages/ProfilePage";
 import AllUserPage from "@/pages/Admin/AllUserPage";
 import AllAgentPage from "@/pages/Admin/AllAgentPage";
+import TransactionPage from "@/pages/TransactionPage";
 const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
 
 export const adminSidebarItems: ISidebarItem[] = [
@@ -28,6 +29,11 @@ export const adminSidebarItems: ISidebarItem[] = [
         title: "All Agent",
         url: "/admin/agent",
         component: AllAgentPage,
+      },
+      {
+        title: "My Transaction",
+        url: "/admin/transaction",
+        component: TransactionPage,
       },
     ],
   },
