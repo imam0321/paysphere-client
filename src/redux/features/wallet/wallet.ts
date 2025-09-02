@@ -49,14 +49,14 @@ export const walletApi = baseApi.injectEndpoints({
         url: `/wallet/block/${id}`,
         method: "POST",
       }),
-      invalidatesTags: ["USER","WALLET", "TRANSACTION"],
+      invalidatesTags: ["USER", "AGENT", "WALLET", "TRANSACTION"],
     }),
     unblockedWallet: builder.mutation<IResponse<IWalletResponse>, string>({
       query: (id) => ({
         url: `/wallet/unblock/${id}`,
         method: "POST",
       }),
-      invalidatesTags: ["USER","WALLET", "TRANSACTION"],
+      invalidatesTags: ["USER", "AGENT", "WALLET", "TRANSACTION"],
     }),
 
   }),

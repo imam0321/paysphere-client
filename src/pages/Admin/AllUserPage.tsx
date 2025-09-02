@@ -69,7 +69,7 @@ export default function AllUserPage() {
     <div className="w-full max-w-3xl mx-auto py-2">
       <Card>
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle>All Users</CardTitle>
         </CardHeader>
         <CardContent>
           {/* Filters */}

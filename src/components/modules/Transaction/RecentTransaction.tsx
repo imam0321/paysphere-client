@@ -21,6 +21,7 @@ export default function RecentTransaction() {
             <TableRow>
               <TableHead>Date</TableHead>
               <TableHead>Payment Type</TableHead>
+              <TableHead>From Wallet</TableHead>
               <TableHead className="text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
@@ -44,6 +45,7 @@ export default function RecentTransaction() {
                       {new Date(tx.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="truncate">{tx.type}</TableCell>
+                    <TableCell className="truncate">{tx?.fromWalletId?.userId?.phone || "Self"}</TableCell>
                     <TableCell className="text-right font-medium">
                       {tx.amount} Tk
                     </TableCell>

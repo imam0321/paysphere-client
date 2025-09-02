@@ -23,36 +23,53 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
-import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
 import { role } from "@/constants/role";
+import { Button } from "@/components/ui/button";
+import {
+  useBlockedWalletMutation,
+  useUnblockedWalletMutation,
+} from "@/redux/features/wallet/wallet";
+import { useGetAllAgentQuery } from "@/redux/features/agent/agent";
 
-export default function TransactionPage() {
+export default function AllAgentPage() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [page, setPage] = useState(1);
-  const limit = 8;
+  const limit = 5;
 
   const { data: userInfo } = useUserInfoQuery();
-  const { data: transactionData, isLoading } = useGetMyTransactionQuery({
+  const { data: userData, isLoading } = useGetAllAgentQuery({
     page,
     limit,
   });
 
-  const transactions = transactionData?.data || [];
-  const meta = transactionData?.meta;
+  const [blockedWallet] = useBlockedWalletMutation();
+  const [unblockedWallet] = useUnblockedWalletMutation();
+
+  const transactions = userData?.data || [];
+  const meta = userData?.meta;
 
   const filteredTransactions =
     typeFilter === "all"
       ? transactions
-      : transactions.filter((t) => t.type === typeFilter);
+      : transactions.filter((t) => t.walletId?.status === typeFilter);
+
+  const handleBlockUser = async (id: string) => {
+    const res = await blockedWallet(id).unwrap();
+    console.log(res);
+  };
+
+  const handleUnblockUser = async (id: string) => {
+    const res = await unblockedWallet(id).unwrap();
+    console.log(res);
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto py-2">
       <Card>
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle>All Agent</CardTitle>
         </CardHeader>
         <CardContent>
           {/* Filters */}
@@ -63,20 +80,11 @@ export default function TransactionPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                {userInfo?.role === role.user && (
+                {(userInfo?.role === role.user ||
+                  userInfo?.role === role.admin) && (
                   <>
-                    <SelectItem value="add_money">Add Money</SelectItem>
-                    <SelectItem value="withdraw">Withdraw</SelectItem>
-                    <SelectItem value="send_money">Send Money</SelectItem>
-                    <SelectItem value="receive_money">Receive Money</SelectItem>
-                  </>
-                )}
-                {userInfo?.role === role.agent && (
-                  <>
-                    <SelectItem value="withdraw">Withdraw</SelectItem>
-                    <SelectItem value="send_money">Send Money</SelectItem>
-                    <SelectItem value="cash_in">Cash In</SelectItem>
-                    <SelectItem value="cash_out">Cash Out</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="blocked">Blocked</SelectItem>
                   </>
                 )}
               </SelectContent>
@@ -87,17 +95,15 @@ export default function TransactionPage() {
           <Table className="border-y">
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Phone</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Balance After</TableHead>
-                <TableHead>From Wallet</TableHead>
-                <TableHead>To Wallet</TableHead>
+                <TableHead>Wallet Status</TableHead>
+                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                // Skeleton Rows
                 [...Array(5)].map((_, i) => (
                   <TableRow key={i}>
                     <TableCell>
@@ -112,27 +118,43 @@ export default function TransactionPage() {
                     <TableCell>
                       <Skeleton className="h-4 w-20" />
                     </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
                   </TableRow>
                 ))
               ) : filteredTransactions.length > 0 ? (
                 filteredTransactions.map((tx) => (
                   <TableRow key={tx._id}>
+                    <TableCell>{tx.name}</TableCell>
+                    <TableCell>{tx.phone}</TableCell>
+                    <TableCell>{tx?.walletId?.balance?.toFixed(2)}</TableCell>
+                    <TableCell>{tx.walletId?.status}</TableCell>
                     <TableCell>
-                      {format(new Date(tx.createdAt), "PP, hh:mm a")}
+                      {tx.walletId?.status === "active" ? (
+                        <Button
+                          size="sm"
+                          className="bg-primary"
+                          onClick={() =>
+                            handleBlockUser(tx?.walletId?._id as string)
+                          }
+                        >
+                          Block
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          className="bg-muted-foreground"
+                          onClick={() =>
+                            handleUnblockUser(tx?.walletId?._id as string)
+                          }
+                        >
+                          Active
+                        </Button>
+                      )}
                     </TableCell>
-                    <TableCell>{tx.type}</TableCell>
-                    <TableCell>{tx.amount.toFixed(2)}</TableCell>
-                    <TableCell>{tx.currentBalance.toFixed(2)}</TableCell>
-                    <TableCell>{tx?.fromWalletId?.userId?.phone || "Self"}</TableCell>
-                    <TableCell>{tx?.toWalletId?.userId?.phone}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-gray-500">
+                  <TableCell colSpan={4} className="text-center text-gray-500">
                     No transactions found.
                   </TableCell>
                 </TableRow>
@@ -144,7 +166,6 @@ export default function TransactionPage() {
           {!isLoading && meta && meta.totalPage > 1 && (
             <Pagination className="mt-4">
               <PaginationContent>
-                {/* Previous Button */}
                 <PaginationItem>
                   <PaginationPrevious
                     href="#"
@@ -158,7 +179,6 @@ export default function TransactionPage() {
                   />
                 </PaginationItem>
 
-                {/* Page Numbers */}
                 {[...Array(meta.totalPage)].map((_, index) => {
                   const pageNumber = index + 1;
                   return (
@@ -177,7 +197,6 @@ export default function TransactionPage() {
                   );
                 })}
 
-                {/* Next Button */}
                 <PaginationItem>
                   <PaginationNext
                     href="#"
