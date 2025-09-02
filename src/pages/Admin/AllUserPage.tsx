@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,16 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUserInfoQuery } from "@/redux/features/auth/auth";
-import { role } from "@/constants/role";
 import { useGetAllUserQuery } from "@/redux/features/user/user";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,16 +16,26 @@ import {
   useUnblockedWalletMutation,
 } from "@/redux/features/wallet/wallet";
 import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
+import { Input } from "@/components/ui/input";
+import WalletActionButton from "@/components/modules/HelperComponents/WalletActionButton";
 
 export default function AllUserPage() {
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const { data: userInfo } = useUserInfoQuery();
+  useEffect(() => {
+    if (searchTerm === "") {
+      setAppliedSearch("");
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   const { data: userData, isLoading } = useGetAllUserQuery({
     page,
     limit,
+    searchTerm: appliedSearch,
   });
 
   const [blockedWallet] = useBlockedWalletMutation();
@@ -42,11 +43,6 @@ export default function AllUserPage() {
 
   const users = userData?.data || [];
   const meta = userData?.meta;
-
-  const filteredUser =
-    typeFilter === "all"
-      ? users
-      : users.filter((t) => t.walletId?.status === typeFilter);
 
   const handleBlockUser = async (id: string) => {
     const res = await blockedWallet(id).unwrap();
@@ -67,26 +63,18 @@ export default function AllUserPage() {
         <CardContent>
           {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-4">
-            <Select
-              value={typeFilter}
-              onValueChange={(value) => {
-                setTypeFilter(value);
-                setPage(1);
-              }}
+            <Input
+              placeholder="Search name or phone ...."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-[200px]"
+            />
+            <Button
+              onClick={() => setAppliedSearch(searchTerm)}
+              disabled={!searchTerm.trim()}
             >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {userInfo?.role === role.admin && (
-                  <>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="blocked">Blocked</SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
+              Search
+            </Button>
           </div>
 
           {/* Table */}
@@ -118,35 +106,20 @@ export default function AllUserPage() {
                     </TableCell>
                   </TableRow>
                 ))
-              ) : filteredUser.length > 0 ? (
-                filteredUser.map((tx) => (
+              ) : users.length > 0 ? (
+                users.map((tx) => (
                   <TableRow key={tx._id}>
                     <TableCell>{tx.name}</TableCell>
                     <TableCell>{tx.phone}</TableCell>
                     <TableCell>{tx?.walletId?.balance?.toFixed(2)}</TableCell>
                     <TableCell>{tx.walletId?.status}</TableCell>
                     <TableCell>
-                      {tx.walletId?.status === "active" ? (
-                        <Button
-                          size="sm"
-                          className="bg-primary"
-                          onClick={() =>
-                            handleBlockUser(tx?.walletId?._id as string)
-                          }
-                        >
-                          Block
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          className="bg-muted-foreground"
-                          onClick={() =>
-                            handleUnblockUser(tx?.walletId?._id as string)
-                          }
-                        >
-                          Unblock
-                        </Button>
-                      )}
+                      <WalletActionButton
+                        walletId={tx.walletId?._id as string}
+                        status={tx.walletId?.status as "active" | "blocked"}
+                        onBlock={handleBlockUser}
+                        onUnblock={handleUnblockUser}
+                      />
                     </TableCell>
                   </TableRow>
                 ))

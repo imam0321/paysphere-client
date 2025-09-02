@@ -11,11 +11,29 @@ export const agentApi = baseApi.injectEndpoints({
         params
       }),
       providesTags: ["AGENT"],
-    })
+    }),
+
+    approvedAgent: builder.mutation<IResponse<IUserResponse>, string>({
+      query: (id) => ({
+        url: `/agent/approve/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["AGENT", "WALLET", "TRANSACTION"],
+    }),
+
+    suspendedAgent: builder.mutation<IResponse<IUserResponse>, string>({
+      query: (id) => ({
+        url: `/agent/suspend/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["AGENT", "WALLET", "TRANSACTION"],
+    }),
 
   }),
 });
 
 export const {
-  useGetAllAgentQuery
+  useGetAllAgentQuery,
+  useApprovedAgentMutation,
+  useSuspendedAgentMutation
 } = agentApi;

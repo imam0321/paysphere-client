@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -8,53 +8,63 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUserInfoQuery } from "@/redux/features/auth/auth";
-import { role } from "@/constants/role";
 import { Button } from "@/components/ui/button";
 import {
   useBlockedWalletMutation,
   useUnblockedWalletMutation,
 } from "@/redux/features/wallet/wallet";
-import { useGetAllAgentQuery } from "@/redux/features/agent/agent";
+import { useApprovedAgentMutation, useGetAllAgentQuery, useSuspendedAgentMutation } from "@/redux/features/agent/agent";
 import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
+import { Input } from "@/components/ui/input";
+import WalletActionButton from "@/components/modules/HelperComponents/WalletActionButton";
+import ApprovalActionButton from "@/components/modules/HelperComponents/ApprovalActionButton";
 
 export default function AllAgentPage() {
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [page, setPage] = useState(1);
   const limit = 5;
 
-  const { data: userInfo } = useUserInfoQuery();
+  useEffect(() => {
+    if (searchTerm === "") {
+      setAppliedSearch("");
+      setPage(1);
+    }
+  }, [searchTerm]);
+
   const { data: userData, isLoading } = useGetAllAgentQuery({
     page,
     limit,
+    searchTerm: appliedSearch,
   });
 
   const [blockedWallet] = useBlockedWalletMutation();
   const [unblockedWallet] = useUnblockedWalletMutation();
 
+  const [approvedAgent] = useApprovedAgentMutation();
+  const [suspendedAgent] = useSuspendedAgentMutation();
+
   const agents = userData?.data || [];
   const meta = userData?.meta;
 
-  const filteredAgents =
-    typeFilter === "all"
-      ? agents
-      : agents.filter((t) => t.walletId?.status === typeFilter);
-
-  const handleBlockUser = async (id: string) => {
+  const handleBlockAgent = async (id: string) => {
     const res = await blockedWallet(id).unwrap();
     console.log(res);
   };
 
-  const handleUnblockUser = async (id: string) => {
+  const handleUnblockAgent = async (id: string) => {
     const res = await unblockedWallet(id).unwrap();
+    console.log(res);
+  };
+  
+  const handleSuspendedAgent = async (id: string) => {
+    const res = await suspendedAgent(id).unwrap();
+    console.log(res);
+  };
+
+  const handleApprovedAgent = async (id: string) => {
+    const res = await approvedAgent(id).unwrap();
     console.log(res);
   };
 
@@ -67,20 +77,13 @@ export default function AllAgentPage() {
         <CardContent>
           {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-4">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {userInfo?.role === role.admin && (
-                  <>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="blocked">Blocked</SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
+            <Input
+              placeholder="Search name or phone ...."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-[200px]"
+            />
+            <Button onClick={() => setAppliedSearch(searchTerm)} disabled={!searchTerm.trim()}>Search</Button>
           </div>
 
           {/* Table */}
@@ -91,7 +94,7 @@ export default function AllAgentPage() {
                 <TableHead>Phone</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Wallet Status</TableHead>
-                <TableHead>Action</TableHead>
+                <TableHead>Agent Approval</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -112,35 +115,27 @@ export default function AllAgentPage() {
                     </TableCell>
                   </TableRow>
                 ))
-              ) : filteredAgents.length > 0 ? (
-                filteredAgents.map((tx) => (
+              ) : agents.length > 0 ? (
+                agents.map((tx) => (
                   <TableRow key={tx._id}>
                     <TableCell>{tx.name}</TableCell>
                     <TableCell>{tx.phone}</TableCell>
                     <TableCell>{tx?.walletId?.balance?.toFixed(2)}</TableCell>
-                    <TableCell>{tx.walletId?.status}</TableCell>
                     <TableCell>
-                      {tx.walletId?.status === "active" ? (
-                        <Button
-                          size="sm"
-                          className="bg-primary"
-                          onClick={() =>
-                            handleBlockUser(tx?.walletId?._id as string)
-                          }
-                        >
-                          Block
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          className="bg-muted-foreground"
-                          onClick={() =>
-                            handleUnblockUser(tx?.walletId?._id as string)
-                          }
-                        >
-                          Active
-                        </Button>
-                      )}
+                      <WalletActionButton
+                        walletId={tx.walletId?._id as string}
+                        status={tx.walletId?.status as "active" | "blocked"}
+                        onBlock={handleBlockAgent}
+                        onUnblock={handleUnblockAgent}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <ApprovalActionButton
+                        agentId={tx._id}
+                        isApproved={tx.isApproved}
+                        onApprove={handleApprovedAgent}
+                        onSuspend={handleSuspendedAgent}
+                      />
                     </TableCell>
                   </TableRow>
                 ))
