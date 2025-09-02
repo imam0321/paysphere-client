@@ -15,19 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
 import { role } from "@/constants/role";
+import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
 
 export default function TransactionPage() {
   const [typeFilter, setTypeFilter] = useState("all");
@@ -38,15 +31,11 @@ export default function TransactionPage() {
   const { data: transactionData, isLoading } = useGetMyTransactionQuery({
     page,
     limit,
+    type: typeFilter === "all" ? undefined : typeFilter,
   });
 
   const transactions = transactionData?.data || [];
   const meta = transactionData?.meta;
-
-  const filteredTransactions =
-    typeFilter === "all"
-      ? transactions
-      : transactions.filter((t) => t.type === typeFilter);
 
   return (
     <div className="w-full max-w-3xl mx-auto py-2">
@@ -57,7 +46,13 @@ export default function TransactionPage() {
         <CardContent>
           {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-4">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <Select
+              value={typeFilter}
+              onValueChange={(value) => {
+                setTypeFilter(value);
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by Type" />
               </SelectTrigger>
@@ -68,6 +63,7 @@ export default function TransactionPage() {
                     <SelectItem value="add_money">Add Money</SelectItem>
                     <SelectItem value="withdraw">Withdraw</SelectItem>
                     <SelectItem value="send_money">Send Money</SelectItem>
+                    <SelectItem value="cash_in">Cash In</SelectItem>
                     <SelectItem value="receive_money">Receive Money</SelectItem>
                   </>
                 )}
@@ -117,8 +113,8 @@ export default function TransactionPage() {
                     </TableCell>
                   </TableRow>
                 ))
-              ) : filteredTransactions.length > 0 ? (
-                filteredTransactions.map((tx) => (
+              ) : transactions.length > 0 ? (
+                transactions.map((tx) => (
                   <TableRow key={tx._id}>
                     <TableCell>
                       {format(new Date(tx.createdAt), "PP, hh:mm a")}
@@ -126,7 +122,9 @@ export default function TransactionPage() {
                     <TableCell>{tx.type}</TableCell>
                     <TableCell>{tx.amount.toFixed(2)}</TableCell>
                     <TableCell>{tx.currentBalance.toFixed(2)}</TableCell>
-                    <TableCell>{tx?.fromWalletId?.userId?.phone || "Self"}</TableCell>
+                    <TableCell>
+                      {tx?.fromWalletId?.userId?.phone || "Self"}
+                    </TableCell>
                     <TableCell>{tx?.toWalletId?.userId?.phone}</TableCell>
                   </TableRow>
                 ))
@@ -142,58 +140,11 @@ export default function TransactionPage() {
 
           {/* Pagination */}
           {!isLoading && meta && meta.totalPage > 1 && (
-            <Pagination className="mt-4">
-              <PaginationContent>
-                {/* Previous Button */}
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (page > 1) setPage(page - 1);
-                    }}
-                    className={
-                      page === 1 ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-
-                {/* Page Numbers */}
-                {[...Array(meta.totalPage)].map((_, index) => {
-                  const pageNumber = index + 1;
-                  return (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        href="#"
-                        isActive={page === pageNumber}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPage(pageNumber);
-                        }}
-                      >
-                        {pageNumber}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
-
-                {/* Next Button */}
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (page < meta.totalPage) setPage(page + 1);
-                    }}
-                    className={
-                      page === meta.totalPage
-                        ? "pointer-events-none opacity-50"
-                        : ""
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationComponent
+              currentPage={page}
+              totalPages={meta.totalPage}
+              onPageChange={(p) => setPage(p)}
+            />
           )}
         </CardContent>
       </Card>

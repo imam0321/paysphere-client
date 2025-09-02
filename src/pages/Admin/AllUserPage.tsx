@@ -15,14 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
 import { role } from "@/constants/role";
@@ -32,6 +24,7 @@ import {
   useBlockedWalletMutation,
   useUnblockedWalletMutation,
 } from "@/redux/features/wallet/wallet";
+import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
 
 export default function AllUserPage() {
   const [typeFilter, setTypeFilter] = useState("all");
@@ -47,13 +40,13 @@ export default function AllUserPage() {
   const [blockedWallet] = useBlockedWalletMutation();
   const [unblockedWallet] = useUnblockedWalletMutation();
 
-  const transactions = userData?.data || [];
+  const users = userData?.data || [];
   const meta = userData?.meta;
 
-  const filteredTransactions =
+  const filteredUser =
     typeFilter === "all"
-      ? transactions
-      : transactions.filter((t) => t.walletId?.status === typeFilter);
+      ? users
+      : users.filter((t) => t.walletId?.status === typeFilter);
 
   const handleBlockUser = async (id: string) => {
     const res = await blockedWallet(id).unwrap();
@@ -74,14 +67,19 @@ export default function AllUserPage() {
         <CardContent>
           {/* Filters */}
           <div className="flex flex-wrap gap-4 mb-4">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <Select
+              value={typeFilter}
+              onValueChange={(value) => {
+                setTypeFilter(value);
+                setPage(1);
+              }}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                {(userInfo?.role === role.user ||
-                  userInfo?.role === role.admin) && (
+                {userInfo?.role === role.admin && (
                   <>
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="blocked">Blocked</SelectItem>
@@ -98,7 +96,7 @@ export default function AllUserPage() {
                 <TableHead>Name</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>Wallet Status</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -120,8 +118,8 @@ export default function AllUserPage() {
                     </TableCell>
                   </TableRow>
                 ))
-              ) : filteredTransactions.length > 0 ? (
-                filteredTransactions.map((tx) => (
+              ) : filteredUser.length > 0 ? (
+                filteredUser.map((tx) => (
                   <TableRow key={tx._id}>
                     <TableCell>{tx.name}</TableCell>
                     <TableCell>{tx.phone}</TableCell>
@@ -155,7 +153,7 @@ export default function AllUserPage() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-gray-500">
-                    No transactions found.
+                    No users found.
                   </TableCell>
                 </TableRow>
               )}
@@ -164,55 +162,11 @@ export default function AllUserPage() {
 
           {/* Pagination */}
           {!isLoading && meta && meta.totalPage > 1 && (
-            <Pagination className="mt-4">
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (page > 1) setPage(page - 1);
-                    }}
-                    className={
-                      page === 1 ? "pointer-events-none opacity-50" : ""
-                    }
-                  />
-                </PaginationItem>
-
-                {[...Array(meta.totalPage)].map((_, index) => {
-                  const pageNumber = index + 1;
-                  return (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        href="#"
-                        isActive={page === pageNumber}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setPage(pageNumber);
-                        }}
-                      >
-                        {pageNumber}
-                      </PaginationLink>
-                    </PaginationItem>
-                  );
-                })}
-
-                <PaginationItem>
-                  <PaginationNext
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (page < meta.totalPage) setPage(page + 1);
-                    }}
-                    className={
-                      page === meta.totalPage
-                        ? "pointer-events-none opacity-50"
-                        : ""
-                    }
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
+            <PaginationComponent
+              currentPage={page}
+              totalPages={meta.totalPage}
+              onPageChange={(p) => setPage(p)}
+            />
           )}
         </CardContent>
       </Card>

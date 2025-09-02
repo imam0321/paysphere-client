@@ -53,7 +53,7 @@ export default function WithdrawMoney() {
     .filter((item: { phone: string }) => item.phone !== myInfo?.phone)
     .map((item: any) => ({
       phone: item.phone,
-      walletId: item.walletId,
+      walletId: item.walletId._id,
     }));
 
   const form = useForm<TFormValues>({
