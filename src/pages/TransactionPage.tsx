@@ -8,22 +8,24 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
-import { role } from "@/constants/role";
 import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
+import type { DateRange } from "react-day-picker";
+import TransactionFilters from "@/components/modules/HelperComponents/TransactionFilters";
+
+interface IActiveFilters {
+  type: string;
+  startDate?: string;
+  endDate?: string;
+}
 
 export default function TransactionPage() {
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [activeFilters, setActiveFilters] = useState<IActiveFilters>({
+    type: "all",
+  });
   const [page, setPage] = useState(1);
   const limit = 8;
 
@@ -31,61 +33,49 @@ export default function TransactionPage() {
   const { data: transactionData, isLoading } = useGetMyTransactionQuery({
     page,
     limit,
-    type: typeFilter === "all" ? undefined : typeFilter,
+    type: activeFilters.type === "all" ? undefined : activeFilters.type,
+    startDate: activeFilters.startDate,
+    endDate: activeFilters.endDate,
   });
 
   const transactions = transactionData?.data || [];
   const meta = transactionData?.meta;
 
+  const handleFiltersApply = ({
+    type,
+    dateRange,
+  }: {
+    type: string;
+    dateRange?: DateRange;
+  }) => {
+    setPage(1);
+    setActiveFilters({
+      type: type,
+      startDate: dateRange?.from
+        ? format(dateRange.from, "yyyy-MM-dd")
+        : undefined,
+      endDate: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
+    });
+  };
+
+  const handleFiltersReset = () => {
+    setPage(1);
+    setActiveFilters({ type: "all" });
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto py-2">
       <Card>
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle>My Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
           {/* Filters */}
-          <div className="flex flex-wrap gap-4 mb-4">
-            <Select
-              value={typeFilter}
-              onValueChange={(value) => {
-                setTypeFilter(value);
-                setPage(1);
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                {userInfo?.role === role.user && (
-                  <>
-                    <SelectItem value="add_money">Add Money</SelectItem>
-                    <SelectItem value="withdraw">Withdraw</SelectItem>
-                    <SelectItem value="send_money">Send Money</SelectItem>
-                    <SelectItem value="cash_in">Cash In</SelectItem>
-                    <SelectItem value="receive_money">Receive Money</SelectItem>
-                  </>
-                )}
-                {userInfo?.role === role.agent && (
-                  <>
-                    <SelectItem value="withdraw">Withdraw</SelectItem>
-                    <SelectItem value="send_money">Send Money</SelectItem>
-                    <SelectItem value="cash_in">Cash In</SelectItem>
-                    <SelectItem value="cash_out">Cash Out</SelectItem>
-                  </>
-                )}
-                {userInfo?.role === role.admin && (
-                  <>
-                    <SelectItem value="fee">Fee</SelectItem>
-                    <SelectItem value="send_money">Send Money</SelectItem>
-                    <SelectItem value="add_money">Add money</SelectItem>
-                  </>
-                )}
-              </SelectContent>
-            </Select>
-          </div>
-
+          <TransactionFilters
+            userInfo={userInfo}
+            onApply={handleFiltersApply}
+            onReset={handleFiltersReset}
+          />
           {/* Table */}
           <Table className="border-y">
             <TableHeader>
@@ -101,7 +91,7 @@ export default function TransactionPage() {
             <TableBody>
               {isLoading ? (
                 // Skeleton Rows
-                [...Array(5)].map((_, i) => (
+                [...Array(6)].map((_, i) => (
                   <TableRow key={i}>
                     <TableCell>
                       <Skeleton className="h-4 w-32" />
@@ -132,7 +122,9 @@ export default function TransactionPage() {
                     <TableCell>
                       {tx?.fromWalletId?.userId?.phone || "Self"}
                     </TableCell>
-                    <TableCell>{tx?.toWalletId?.userId?.phone}</TableCell>
+                    <TableCell>
+                      {tx?.toWalletId?.userId?.phone || "N/A"}
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
