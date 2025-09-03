@@ -48,3 +48,17 @@ export interface ToWalletId {
   createdAt: string
   updatedAt: string
 }
+
+export interface ITransactionAmountResponse {
+  last7Days: number
+  last30Days: number
+}
+export interface ITransactionSummaryResponse {
+  totalFee: number
+  totalAddMoney: number
+  totalSendMoney: number
+  totalReceiveMoney: number
+  totalCashIn: number
+  totalCashOut: number
+  totalWithdraw: number
+}

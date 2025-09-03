@@ -17,9 +17,11 @@ import WithdrawMoney from "@/components/modules/User/WithdrawMoney";
 import QuickAction from "@/components/modules/Home/QuickAction";
 import CashIn from "@/components/modules/Agent/CashIn";
 import CashOut from "@/components/modules/Agent/CashOut";
+import { useGetMyTransactionAmountQuery } from "@/redux/features/transaction/transaction";
 
 export default function WalletPage() {
   const { data, isLoading } = useUserInfoQuery(undefined);
+  const { data: transactionAmount } = useGetMyTransactionAmountQuery(undefined);
 
   return (
     <motion.div
@@ -51,7 +53,7 @@ export default function WalletPage() {
                     label="Balance"
                     value={Number((data?.walletId?.balance ?? 0).toFixed(2))}
                   />
-                  <Stat label="Last Month Spend" value={0} />
+                  <Stat label="Last Month Spend" value={Number((transactionAmount?.data.last30Days ?? 0).toFixed(2))} />
                   <Stat label="Rewards" value={0} />
                 </>
               )}

@@ -34,14 +34,14 @@ export default function DashboardStatsCard() {
     {
       title: "Total Users",
       value: totalUser?.meta?.total || 0,
-      icon: <IconUsers className="h-8 w-8 text-secondary" />,
+      icon: <IconUsers className="h-8 w-8 text-muted-foreground" />,
       description: "Registered users in the system",
       bg: "bg-secondary/20",
     },
     {
       title: "Total Agents",
       value: totalAgent?.meta?.total || 0,
-      icon: <IconUserDollar className="h-8 w-8 text-accent" />,
+      icon: <IconUserDollar className="h-8 w-8 text-muted-foreground" />,
       description: "Registered agent in the system",
       bg: "bg-accent/20",
     },
