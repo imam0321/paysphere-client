@@ -85,7 +85,6 @@ export default function AllUserPage() {
                 <TableHead>Phone</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Wallet Status</TableHead>
-                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -112,7 +111,6 @@ export default function AllUserPage() {
                     <TableCell>{tx.name}</TableCell>
                     <TableCell>{tx.phone}</TableCell>
                     <TableCell>{tx?.walletId?.balance?.toFixed(2)}</TableCell>
-                    <TableCell>{tx.walletId?.status}</TableCell>
                     <TableCell>
                       <WalletActionButton
                         walletId={tx.walletId?._id as string}

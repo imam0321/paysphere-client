@@ -4,6 +4,7 @@ import ProfilePage from "@/pages/ProfilePage";
 import AllUserPage from "@/pages/Admin/AllUserPage";
 import AllAgentPage from "@/pages/Admin/AllAgentPage";
 import TransactionPage from "@/pages/TransactionPage";
+import AllTransactionPage from "@/pages/Admin/AllTransactionPage";
 const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
 
 export const adminSidebarItems: ISidebarItem[] = [
@@ -32,8 +33,13 @@ export const adminSidebarItems: ISidebarItem[] = [
       },
       {
         title: "My Transaction",
-        url: "/admin/transaction",
+        url: "/admin/my-transaction",
         component: TransactionPage,
+      },
+      {
+        title: "All Transaction",
+        url: "/admin/all-transaction",
+        component: AllTransactionPage,
       },
     ],
   },

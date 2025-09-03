@@ -20,7 +20,7 @@ export const userSidebarItems: ISidebarItem[] = [
       },
       {
         title: "My Transaction",
-        url: "/user/transaction",
+        url: "/user/my-transaction",
         component: TransactionPage,
       },
     ],

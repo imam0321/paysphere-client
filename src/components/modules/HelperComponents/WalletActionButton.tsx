@@ -42,8 +42,8 @@ export default function WalletActionButton({
         <Button
           className={
             status === "active"
-              ? "bg-primary rounded-2xl"
-              : "bg-muted-foreground rounded-2xl"
+              ? "bg-chart-5 rounded-2xl"
+              : "bg-primary rounded-2xl"
           }
           onClick={() => setOpen(true)}
         >

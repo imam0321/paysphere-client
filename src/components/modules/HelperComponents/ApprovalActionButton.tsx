@@ -42,8 +42,8 @@ export default function ApprovalActionButton({
         <Button
           className={
             isApproved
-              ? "bg-primary rounded-2xl"
-              : "bg-secondary rounded-2xl"
+              ? "bg-chart-5 rounded-2xl"
+              : "bg-primary rounded-2xl"
           }
           onClick={() => setOpen(true)}
         >

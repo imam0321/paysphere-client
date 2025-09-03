@@ -19,7 +19,7 @@ export const agentSidebarItems: ISidebarItem[] = [
       },
       {
         title: "My Transaction",
-        url: "/agent/transaction",
+        url: "/agent/my-transaction",
         component: TransactionPage,
       },
     ],
