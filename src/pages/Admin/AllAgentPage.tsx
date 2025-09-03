@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import {
   useBlockedWalletMutation,
@@ -19,6 +18,7 @@ import PaginationComponent from "@/components/modules/HelperComponents/Paginatio
 import { Input } from "@/components/ui/input";
 import WalletActionButton from "@/components/modules/HelperComponents/WalletActionButton";
 import ApprovalActionButton from "@/components/modules/HelperComponents/ApprovalActionButton";
+import SkeletonTableLoading from "@/components/modules/HelperComponents/SkeletonTableLoading";
 
 export default function AllAgentPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -99,22 +99,7 @@ export default function AllAgentPage() {
             </TableHeader>
             <TableBody>
               {isLoading ? (
-                [...Array(5)].map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-4 w-32" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                  </TableRow>
-                ))
+                <SkeletonTableLoading />
               ) : agents.length > 0 ? (
                 agents.map((tx) => (
                   <TableRow key={tx._id}>

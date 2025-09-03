@@ -10,13 +10,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetMyTransactionQuery } from "@/redux/features/transaction/transaction";
 import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useUserInfoQuery } from "@/redux/features/auth/auth";
 import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
 import type { DateRange } from "react-day-picker";
 import TransactionFilters from "@/components/modules/HelperComponents/TransactionFilters";
+import SkeletonTableLoading from "@/components/modules/HelperComponents/SkeletonTableLoading";
 
-interface IActiveFilters {
+export interface IActiveFilters {
   type: string;
   startDate?: string;
   endDate?: string;
@@ -91,25 +91,7 @@ export default function TransactionPage() {
             <TableBody>
               {isLoading ? (
                 // Skeleton Rows
-                [...Array(6)].map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-4 w-32" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                  </TableRow>
-                ))
+                <SkeletonTableLoading />
               ) : transactions.length > 0 ? (
                 transactions.map((tx) => (
                   <TableRow key={tx._id}>

@@ -37,7 +37,19 @@ export default function TransactionFilters({
   >(undefined);
 
   const filterOptions = useMemo(() => {
-    if (!userInfo) return null;
+    if (!userInfo) {
+      return (
+        <>
+          <SelectItem value="fee">Fee</SelectItem>
+          <SelectItem value="add_money">Add Money</SelectItem>
+          <SelectItem value="withdraw">Withdraw</SelectItem>
+          <SelectItem value="send_money">Send Money</SelectItem>
+          <SelectItem value="cash_in">Cash In</SelectItem>
+          <SelectItem value="cash_out">Cash Out</SelectItem>
+          <SelectItem value="receive_money">Receive Money</SelectItem>
+        </>
+      );
+    }
     switch (userInfo.role) {
       case role.user:
         return (
@@ -128,7 +140,7 @@ export default function TransactionFilters({
         </PopoverContent>
       </Popover>
 
-      <Button onClick={handleApplyClick} >Apply Filters</Button>
+      <Button onClick={handleApplyClick}>Apply Filters</Button>
       <Button onClick={handleResetClick} className="bg-chart-5">
         Reset
       </Button>

@@ -8,31 +8,53 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useGetAllTransactionQuery } from "@/redux/features/transaction/transaction";
 import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
 import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
+import type { IActiveFilters } from "../TransactionPage";
+import TransactionFilters from "@/components/modules/HelperComponents/TransactionFilters";
+import type { DateRange } from "react-day-picker";
+import SkeletonTableLoading from "@/components/modules/HelperComponents/SkeletonTableLoading";
 
 export default function AllTransactionPage() {
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [activeFilters, setActiveFilters] = useState<IActiveFilters>({
+    type: "all",
+  });
   const [page, setPage] = useState(1);
   const limit = 8;
 
   const { data: transactionData, isLoading } = useGetAllTransactionQuery({
     page,
     limit,
-    type: typeFilter === "all" ? undefined : typeFilter,
+    type: activeFilters.type === "all" ? undefined : activeFilters.type,
+    startDate: activeFilters.startDate,
+    endDate: activeFilters.endDate,
   });
 
   const transactions = transactionData?.data || [];
   const meta = transactionData?.meta;
+
+  const handleFiltersApply = ({
+    type,
+    dateRange,
+  }: {
+    type: string;
+    dateRange?: DateRange;
+  }) => {
+    setPage(1);
+    setActiveFilters({
+      type: type,
+      startDate: dateRange?.from
+        ? format(dateRange.from, "yyyy-MM-dd")
+        : undefined,
+      endDate: dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : undefined,
+    });
+  };
+
+  const handleFiltersReset = () => {
+    setPage(1);
+    setActiveFilters({ type: "all" });
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto py-2">
@@ -42,29 +64,11 @@ export default function AllTransactionPage() {
         </CardHeader>
         <CardContent>
           {/* Filters */}
-          <div className="flex flex-wrap gap-4 mb-4">
-            <Select
-              value={typeFilter}
-              onValueChange={(value) => {
-                setTypeFilter(value);
-                setPage(1);
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="fee">Fee</SelectItem>
-                <SelectItem value="add_money">Add Money</SelectItem>
-                <SelectItem value="withdraw">Withdraw</SelectItem>
-                <SelectItem value="send_money">Send Money</SelectItem>
-                <SelectItem value="cash_in">Cash In</SelectItem>
-                <SelectItem value="cash_out">Cash Out</SelectItem>
-                <SelectItem value="receive_money">Receive Money</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <TransactionFilters
+            userInfo={undefined}
+            onApply={handleFiltersApply}
+            onReset={handleFiltersReset}
+          />
 
           {/* Table */}
           <Table className="border-y">
@@ -81,25 +85,7 @@ export default function AllTransactionPage() {
             <TableBody>
               {isLoading ? (
                 // Skeleton Rows
-                [...Array(6)].map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-4 w-32" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-20" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-4 w-24" />
-                    </TableCell>
-                  </TableRow>
-                ))
+                <SkeletonTableLoading />
               ) : transactions.length > 0 ? (
                 transactions.map((tx) => (
                   <TableRow key={tx._id}>
