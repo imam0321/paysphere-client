@@ -19,11 +19,16 @@ export interface UserId {
 export interface IAddMoney {
   amount: number
 }
+export interface ITransferMoney {
+  walletId: string;
+  amount: number;
+}
 
-export type TTransactionType = "add_money" | "send_money"
+export type TTransactionType = "add_money" | "send_money" | "fee" | "withdraw" | "cash_in" | "cash_out" | "receive_money"
 
 export interface IMoneyResponse {
   _id: string
+  fromWalletId?: string
   toWalletId: string
   type: TTransactionType
   amount: number

@@ -3,7 +3,6 @@ import type { IResponse, IUserResponse } from "@/types";
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-
     getAllUser: builder.query<IResponse<IUserResponse[]>, unknown>({
       query: (params) => ({
         url: "/user",
@@ -12,7 +11,6 @@ export const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["USER", "WALLET"],
     })
-
   }),
 });
 

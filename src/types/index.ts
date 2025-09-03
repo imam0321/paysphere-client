@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 
 export type { IRegister, IRegisterResponse, ILogin, ILoginResponse, IUserResponse, IUserUpdate } from './auth';
 export type { ITransactionResponse } from "./transaction"
-export type { IWalletResponse, IAddMoney, IMoneyResponse } from './wallet';
+export type { IWalletResponse, IAddMoney, IMoneyResponse, ITransferMoney, TTransactionType } from './wallet';
 
 
 export interface IMeta {

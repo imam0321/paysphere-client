@@ -13,6 +13,10 @@ import { agentSidebarItems } from "./agentSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
 import Unauthorized from "@/pages/Unauthorized";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import Features from "@/components/modules/Home/Features";
+import Pricing from "@/components/modules/Home/Pricing";
+import Contact from "@/components/modules/Home/Contact";
+import Faq from "@/components/modules/Home/Faq";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +31,22 @@ export const router = createBrowserRouter([
       {
         Component: AboutPage,
         path: "about",
+      },
+      {
+        Component: Features,
+        path: "features",
+      },
+      {
+        Component: Pricing,
+        path: "pricing",
+      },
+      {
+        Component: Contact,
+        path: "contact",
+      },
+      {
+        Component: Faq,
+        path: "faq",
       },
     ],
   },

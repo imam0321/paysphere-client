@@ -3,8 +3,10 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Facebook, Twitter } from "lucide-react";
 import Logo from "@/assets/icons/Logo";
+import { useUserInfoQuery } from "@/redux/features/auth/auth";
 
 export default function Footer() {
+  const { data } = useUserInfoQuery();
   return (
     <footer className="border-t">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
@@ -55,13 +57,25 @@ export default function Footer() {
               <div className="font-medium mb-3">Product</div>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <Link to="/features">Features</Link>
+                  <Link to="/features" onClick={() => window.scrollTo(0, 0)}>
+                    Features
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/pricing">Pricing</Link>
+                  {!data ? (
+                    <Link to="/pricing" onClick={() => window.scrollTo(0, 0)}>
+                      Pricing
+                    </Link>
+                  ) : (
+                    <Link to={`/${data.role}/wallet`} onClick={() => window.scrollTo(0, 0)}>
+                      Wallet
+                    </Link>
+                  )}
                 </li>
                 <li>
-                  <Link to="/faq">FAQ</Link>
+                  <Link to="/faq" onClick={() => window.scrollTo(0, 0)}>
+                    FAQ
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -69,13 +83,14 @@ export default function Footer() {
               <div className="font-medium mb-3">Company</div>
               <ul className="space-y-2 text-muted-foreground">
                 <li>
-                  <Link to="/about">About</Link>
+                  <Link to="/about" onClick={() => window.scrollTo(0, 0)}>
+                    About
+                  </Link>
                 </li>
                 <li>
-                  <Link to="/contact">Contact</Link>
-                </li>
-                <li>
-                  <Link to="/legal">Legal</Link>
+                  <Link to="/contact" onClick={() => window.scrollTo(0, 0)}>
+                    Contact
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -89,7 +104,6 @@ export default function Footer() {
               <p className="text-muted-foreground">+880 1234-567890</p>
               <p className="text-muted-foreground">Dhaka, Bangladesh</p>
             </div>
-  
           </div>
         </div>
 
@@ -100,8 +114,12 @@ export default function Footer() {
             © {new Date().getFullYear()} PaySphere. All rights reserved.
           </span>
           <div className="flex gap-4">
-            <Link to="/privacy">Privacy</Link>
-            <Link to="/terms">Terms</Link>
+            <Link to="/privacy" onClick={() => window.scrollTo(0, 0)}>
+              Privacy
+            </Link>
+            <Link to="/terms" onClick={() => window.scrollTo(0, 0)}>
+              Terms
+            </Link>
           </div>
         </div>
       </div>

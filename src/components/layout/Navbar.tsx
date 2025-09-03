@@ -19,7 +19,7 @@ import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
 import { Link } from "react-router";
 import { Separator } from "../ui/separator";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   authApi,
   useLogoutMutation,
@@ -33,10 +33,10 @@ import { toast } from "sonner";
 const navLinks = [
   { to: "/", label: "Home", role: "PUBLIC" },
   { to: "/about", label: "About", role: "PUBLIC" },
-  { to: "#features", label: "Features", role: "PUBLIC" },
-  { to: "#pricing", label: "Pricing", role: "PUBLIC" },
-  { to: "#contact", label: "Contact", role: "PUBLIC" },
-  { to: "#faq", label: "FAQ", role: "PUBLIC" },
+  { to: "/features", label: "Features", role: "PUBLIC" },
+  { to: "/pricing", label: "Pricing", role: "PUBLIC" },
+  { to: "/contact", label: "Contact", role: "PUBLIC" },
+  { to: "/faq", label: "FAQ", role: "PUBLIC" },
   { to: "/admin", label: "Dashboard", role: role.admin },
   { to: "/agent", label: "Dashboard", role: role.agent },
   { to: "/user", label: "Dashboard", role: role.user },
@@ -47,25 +47,6 @@ export default function Navbar() {
   const { data, isLoading } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const handleScroll = (to: string) => {
-    if (to.startsWith("#")) {
-      const el = document.querySelector(to);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.scrollTo(0, 0);
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -85,36 +66,32 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <NavigationMenu>
             <NavigationMenuList className="flex items-center gap-1">
-              {navLinks.map((link, index) => (
-                <>
-                  {link.role === "PUBLIC" && (
-                    <NavigationMenuItem key={index}>
+              {navLinks.map((link) => {
+                if (link.to === "/pricing" && data?.role) {
+                  return null;
+                }
+
+                if (link.role === "PUBLIC" || link.role === data?.role) {
+                  return (
+                    <NavigationMenuItem key={link.to}>
                       <NavigationMenuLink asChild>
                         <Link
-                          to={link.to.startsWith("#") ? "/" : link.to}
-                          onClick={() => handleScroll(link.to)}
+                          to={link.to}
+                          onClick={() => {
+                            window.scrollTo(0, 0);
+                            setOpen(false);
+                          }}
                           className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
                         >
                           {link.label}
                         </Link>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
-                  )}
-                  {link.role === data?.role && (
-                    <NavigationMenuItem key={index}>
-                      <NavigationMenuLink asChild>
-                        <Link
-                          to={link.to.startsWith("#") ? "/" : link.to}
-                          onClick={() => handleScroll(link.to)}
-                          className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
-                        >
-                          {link.label}
-                        </Link>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  )}
-                </>
-              ))}
+                  );
+                }
+
+                return null;
+              })}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -137,22 +114,32 @@ export default function Navbar() {
               <div className="mt-6 space-y-2">
                 <NavigationMenu>
                   <NavigationMenuList className="flex flex-col items-start gap-1 px-2">
-                    {navLinks.map((link) => (
-                      <NavigationMenuItem key={link.to}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to={link.to.startsWith("#") ? "/" : link.to}
-                            onClick={() => {
-                              handleScroll(link.to);
-                              setOpen(false);
-                            }}
-                            className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
-                          >
-                            {link.label}
-                          </Link>
-                        </NavigationMenuLink>
-                      </NavigationMenuItem>
-                    ))}
+                    {navLinks.map((link) => {
+                      if (link.to === "/pricing" && data?.role) {
+                        return null;
+                      }
+
+                      if (link.role === "PUBLIC" || link.role === data?.role) {
+                        return (
+                          <NavigationMenuItem key={link.to}>
+                            <NavigationMenuLink asChild>
+                              <Link
+                                to={link.to}
+                                onClick={() => {
+                                  window.scrollTo(0, 0);
+                                  setOpen(false);
+                                }}
+                                className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
+                              >
+                                {link.label}
+                              </Link>
+                            </NavigationMenuLink>
+                          </NavigationMenuItem>
+                        );
+                      }
+
+                      return null;
+                    })}
                   </NavigationMenuList>
                 </NavigationMenu>
               </div>
