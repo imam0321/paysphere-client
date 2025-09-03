@@ -1,8 +1,9 @@
+import { lazy } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, Users, Zap } from "lucide-react";
 import { motion } from "framer-motion";
-import WalletPage from "@/pages/WalletPage";
+const WalletPage = lazy(() => import('@/pages/WalletPage'));
 
 export default function Hero() {
   return (

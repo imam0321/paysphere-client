@@ -17,7 +17,7 @@ import {
 } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { Separator } from "../ui/separator";
 import { useState } from "react";
 import {
@@ -75,16 +75,16 @@ export default function Navbar() {
                   return (
                     <NavigationMenuItem key={link.to}>
                       <NavigationMenuLink asChild>
-                        <Link
+                        <NavLink
                           to={link.to}
                           onClick={() => {
-                            window.scrollTo(0, 0);
                             setOpen(false);
                           }}
+                          replace={true}
                           className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
                         >
                           {link.label}
-                        </Link>
+                        </NavLink>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                   );
@@ -123,16 +123,16 @@ export default function Navbar() {
                         return (
                           <NavigationMenuItem key={link.to}>
                             <NavigationMenuLink asChild>
-                              <Link
+                              <NavLink
                                 to={link.to}
                                 onClick={() => {
-                                  window.scrollTo(0, 0);
                                   setOpen(false);
                                 }}
+                                replace={true}
                                 className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
                               >
                                 {link.label}
-                              </Link>
+                              </NavLink>
                             </NavigationMenuLink>
                           </NavigationMenuItem>
                         );
