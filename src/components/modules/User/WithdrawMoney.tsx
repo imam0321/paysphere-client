@@ -81,7 +81,6 @@ export default function WithdrawMoney() {
       toast.error(error?.data?.message || "Something went wrong", {
         id: toastId,
       });
-      console.log(error);
     }
   };
 

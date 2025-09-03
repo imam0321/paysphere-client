@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -18,6 +19,7 @@ import PaginationComponent from "@/components/modules/HelperComponents/Paginatio
 import { Input } from "@/components/ui/input";
 import WalletActionButton from "@/components/modules/HelperComponents/WalletActionButton";
 import SkeletonTableLoading from "@/components/modules/HelperComponents/SkeletonTableLoading";
+import { toast } from "sonner";
 
 export default function AllUserPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,13 +47,21 @@ export default function AllUserPage() {
   const meta = userData?.meta;
 
   const handleBlockUser = async (id: string) => {
-    const res = await blockedWallet(id).unwrap();
-    console.log(res);
+    try {
+      await blockedWallet(id).unwrap();
+      toast.success("Wallet blocked successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to block wallet.");
+    }
   };
 
   const handleUnblockUser = async (id: string) => {
-    const res = await unblockedWallet(id).unwrap();
-    console.log(res);
+    try {
+      await unblockedWallet(id).unwrap();
+      toast.success("Wallet unblocked successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to unblock wallet.");
+    }
   };
 
   return (

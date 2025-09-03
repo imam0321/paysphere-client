@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -13,12 +14,17 @@ import {
   useBlockedWalletMutation,
   useUnblockedWalletMutation,
 } from "@/redux/features/wallet/wallet";
-import { useApprovedAgentMutation, useGetAllAgentQuery, useSuspendedAgentMutation } from "@/redux/features/agent/agent";
+import {
+  useApprovedAgentMutation,
+  useGetAllAgentQuery,
+  useSuspendedAgentMutation,
+} from "@/redux/features/agent/agent";
 import PaginationComponent from "@/components/modules/HelperComponents/PaginationComponent";
 import { Input } from "@/components/ui/input";
 import WalletActionButton from "@/components/modules/HelperComponents/WalletActionButton";
 import ApprovalActionButton from "@/components/modules/HelperComponents/ApprovalActionButton";
 import SkeletonTableLoading from "@/components/modules/HelperComponents/SkeletonTableLoading";
+import { toast } from "sonner";
 
 export default function AllAgentPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -49,23 +55,39 @@ export default function AllAgentPage() {
   const meta = userData?.meta;
 
   const handleBlockAgent = async (id: string) => {
-    const res = await blockedWallet(id).unwrap();
-    console.log(res);
+    try {
+      await blockedWallet(id).unwrap();
+      toast.success("Wallet blocked successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to block wallet.");
+    }
   };
 
   const handleUnblockAgent = async (id: string) => {
-    const res = await unblockedWallet(id).unwrap();
-    console.log(res);
+    try {
+      await unblockedWallet(id).unwrap();
+      toast.success("Wallet unblocked successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to unblock wallet.");
+    }
   };
-  
+
   const handleSuspendedAgent = async (id: string) => {
-    const res = await suspendedAgent(id).unwrap();
-    console.log(res);
+    try {
+      await suspendedAgent(id).unwrap();
+      toast.success("Agent suspended successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to suspend agent.");
+    }
   };
 
   const handleApprovedAgent = async (id: string) => {
-    const res = await approvedAgent(id).unwrap();
-    console.log(res);
+    try {
+      await approvedAgent(id).unwrap();
+      toast.success("Agent approved successfully!");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to approve agent.");
+    }
   };
 
   return (
@@ -83,7 +105,12 @@ export default function AllAgentPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-[200px]"
             />
-            <Button onClick={() => setAppliedSearch(searchTerm)} disabled={!searchTerm.trim()}>Search</Button>
+            <Button
+              onClick={() => setAppliedSearch(searchTerm)}
+              disabled={!searchTerm.trim()}
+            >
+              Search
+            </Button>
           </div>
 
           {/* Table */}

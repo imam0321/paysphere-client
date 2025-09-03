@@ -1,11 +1,11 @@
 import { lazy } from "react";
 import type { ISidebarItem } from "@/types";
-import ProfilePage from "@/pages/ProfilePage";
-import AllUserPage from "@/pages/Admin/AllUserPage";
-import AllAgentPage from "@/pages/Admin/AllAgentPage";
-import TransactionPage from "@/pages/TransactionPage";
-import AllTransactionPage from "@/pages/Admin/AllTransactionPage";
 const Analytics = lazy(() => import("@/pages/Admin/Analytics"));
+const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const AllUserPage = lazy(() => import("@/pages/Admin/AllUserPage"));
+const AllAgentPage = lazy(() => import("@/pages/Admin/AllAgentPage"));
+const TransactionPage = lazy(() => import("@/pages/TransactionPage"));
+const AllTransactionPage = lazy(() => import("@/pages/Admin/AllTransactionPage"));
 
 export const adminSidebarItems: ISidebarItem[] = [
   {

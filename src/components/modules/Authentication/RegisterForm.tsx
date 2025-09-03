@@ -94,7 +94,6 @@ export default function RegisterForm({ role }: { role: string }) {
       }
     } catch (error: any) {
       toast.error(error?.data?.message, { id: toastId });
-      console.log(error);
     }
   };
 

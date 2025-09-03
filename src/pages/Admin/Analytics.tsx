@@ -46,11 +46,11 @@ export default function Analytics() {
       <Card className="w-full max-w-2xl mx-auto mt-6">
         <CardHeader>
           <CardTitle className="font-bold">
-            All Transaction Amount Summary
+            All Transaction Summary
           </CardTitle>
         </CardHeader>
         <CardContent className="overflow-x-auto">
-          <div className="h-72 min-w-[400px] flex items-center justify-center">
+          <div className="h-80 min-w-[400px] flex items-center justify-center">
             {isLoading ? (
               <div className="w-full h-full animate-pulse space-y-4">
                 {[...Array(7)].map((_, index) => (
@@ -67,7 +67,7 @@ export default function Analytics() {
                   data={summaryData}
                   margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="2 2" />
                   <XAxis dataKey="name" />
                   <YAxis
                     tickFormatter={(v) => v.toLocaleString()}

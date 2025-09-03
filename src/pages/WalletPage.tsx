@@ -39,7 +39,7 @@ export default function WalletPage() {
               <Wallet className="h-5 w-5" /> Wallet
             </CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-4">
+          <CardContent className="space-y-4">
             <div className="grid md:grid-cols-3 grid-cols-1 gap-3">
               {isLoading ? (
                 <>

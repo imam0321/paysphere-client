@@ -26,7 +26,7 @@ export default function Pricing() {
     },
     {
       name: "Agent",
-      price: "2% commission",
+      price: "0.5% commission",
       desc: "Earn commission by providing cash-in & cash-out services.",
       features: [
         "Cash-in / Cash-out operations",

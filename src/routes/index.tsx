@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import App from "@/App";
 import HomePage from "@/pages/HomePage";
 import AboutPage from "@/pages/AboutPage";
@@ -11,12 +12,13 @@ import { generateRoutes } from "@/utils/generateRoutes";
 import { adminSidebarItems } from "./adminSidebarItems";
 import { agentSidebarItems } from "./agentSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
-import Unauthorized from "@/pages/Unauthorized";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+const DashboardLayout = lazy(() => import("@/components/layout/DashboardLayout"));
+const Unauthorized = lazy(() => import("@/pages/Unauthorized"));
 import Features from "@/components/modules/Home/Features";
 import Pricing from "@/components/modules/Home/Pricing";
 import Contact from "@/components/modules/Home/Contact";
 import Faq from "@/components/modules/Home/Faq";
+
 
 export const router = createBrowserRouter([
   {

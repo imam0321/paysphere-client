@@ -1,7 +1,8 @@
-import ProfilePage from "@/pages/ProfilePage";
-import TransactionPage from "@/pages/TransactionPage";
-import WalletPage from "@/pages/WalletPage";
+import { lazy } from "react";
 import type { ISidebarItem } from "@/types";
+const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const TransactionPage = lazy(() => import("@/pages/TransactionPage"));
+const WalletPage = lazy(() => import("@/pages/WalletPage"));
 
 export const agentSidebarItems: ISidebarItem[] = [
   {
