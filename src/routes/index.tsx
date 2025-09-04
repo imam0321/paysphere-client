@@ -17,6 +17,7 @@ import Pricing from "@/components/modules/Home/Pricing";
 import Contact from "@/components/modules/Home/Contact";
 import Faq from "@/components/modules/Home/Faq";
 import Unauthorized from "@/pages/Unauthorized";
+import NotFound from "@/pages/NotFound";
 const DashboardLayout = lazy(() => import("@/components/layout/DashboardLayout"));
 
 
@@ -89,4 +90,8 @@ export const router = createBrowserRouter([
     Component: Unauthorized,
     path: "/unauthorized",
   },
+  {
+    Component: NotFound,
+    path: "*"
+  }
 ]);
