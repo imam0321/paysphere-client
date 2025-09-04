@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import App from "@/App";
 import HomePage from "@/pages/HomePage";
 import AboutPage from "@/pages/AboutPage";
@@ -16,7 +17,8 @@ import Pricing from "@/components/modules/Home/Pricing";
 import Contact from "@/components/modules/Home/Contact";
 import Faq from "@/components/modules/Home/Faq";
 import Unauthorized from "@/pages/Unauthorized";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+const DashboardLayout = lazy(() => import("@/components/layout/DashboardLayout"));
+
 
 
 export const router = createBrowserRouter([

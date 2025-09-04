@@ -11,8 +11,6 @@ import {
 } from "@/redux/features/auth/auth";
 import { useAppDispatch } from "@/redux/hooks";
 import { toast } from "sonner";
-import { Suspense } from "react";
-import { Skeleton } from "../ui/skeleton";
 
 export default function DashboardLayout() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -42,9 +40,7 @@ export default function DashboardLayout() {
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 max-w-7xl mx-auto w-full">
-          <Suspense fallback={<Skeleton className="h-full w-full" />}>
             <Outlet />
-          </Suspense>
         </main>
       </SidebarInset>
     </SidebarProvider>
