@@ -27,7 +27,7 @@ export default function RecentTransaction() {
           </TableHeader>
           <TableBody>
             {isLoading ? (
-              Array(3)
+              Array(2)
                 .fill(0)
                 .map((_, idx) => (
                   <TableRow key={idx}>

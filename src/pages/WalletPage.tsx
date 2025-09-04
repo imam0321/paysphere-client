@@ -11,7 +11,6 @@ import Stat from "@/components/modules/Home/Stat";
 import AddMoney from "@/components/modules/User/AddMoney";
 import RecentTransaction from "@/components/modules/Transaction/RecentTransaction";
 import { Skeleton } from "@/components/ui/skeleton";
-import { motion } from "framer-motion";
 import SendMoney from "@/components/modules/User/SendMoney";
 import WithdrawMoney from "@/components/modules/User/WithdrawMoney";
 import QuickAction from "@/components/modules/Home/QuickAction";
@@ -24,10 +23,7 @@ export default function WalletPage() {
   const { data: transactionAmount } = useGetMyTransactionAmountQuery(undefined);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay: 0.1 }}
+    <div
       className="w-full max-w-2xl mx-auto py-2"
     >
       <div className="relative">
@@ -60,11 +56,11 @@ export default function WalletPage() {
             </div>
             <>
               {isLoading ? (
-                <>
-                  <Skeleton className="h-12 w-full rounded-2xl animate-pulse" />
-                  <Skeleton className="h-12 w-full rounded-2xl animate-pulse" />
-                  <Skeleton className="h-12 w-full rounded-2xl animate-pulse" />
-                </>
+                <div className="grid sm:grid-cols-3 gap-3">
+                  <Skeleton className="h-8 w-full rounded-2xl animate-pulse" />
+                  <Skeleton className="h-8 w-full rounded-2xl animate-pulse" />
+                  <Skeleton className="h-8 w-full rounded-2xl animate-pulse" />
+                </div>
               ) : (
                 <>
                   {data?.role === "user" && (
@@ -105,6 +101,6 @@ export default function WalletPage() {
           <CardFooter className="sr-only">data for illustration.</CardFooter>
         </Card>
       </div>
-    </motion.div>
+    </div>
   );
 }

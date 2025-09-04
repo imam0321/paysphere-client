@@ -29,6 +29,7 @@ import { useAppDispatch } from "@/redux/hooks";
 import { role } from "@/constants/role";
 import LogoutButton from "../modules/Authentication/LogoutButton";
 import { toast } from "sonner";
+import { Skeleton } from "../ui/skeleton";
 
 const navLinks = [
   { to: "/", label: "Home", role: "PUBLIC" },
@@ -181,23 +182,27 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex items-center gap-2">
-          {isLoading && (
-            <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
-          )}
-          {!isLoading && data?.email && (
-            <LogoutButton onLogout={handleLogout} />
-          )}
-          {!isLoading && !data?.email && (
-            <div className="hidden md:flex items-center gap-2">
-              <Link to="/login">
-                <Button variant="outline" className="rounded-2xl">
-                  Login
-                </Button>
-              </Link>
-              <Link to="/register/user">
-                <Button className="rounded-2xl">Sign up</Button>
-              </Link>
+        <div className="hidden md:flex items-center gap-2 min-w-[160px]">
+          {!isLoading ? (
+            data?.email ? (
+              <LogoutButton onLogout={handleLogout} />
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="rounded-2xl">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register/user">
+                  <Button className="rounded-2xl">Sign up</Button>
+                </Link>
+              </>
+            )
+          ) : (
+            // Placeholder box same size as buttons
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-[4.7rem] rounded-2xl animate-pulse"/>
+              <Skeleton className="h-8 w-[4.7rem] rounded-2xl animate-pulse"/>
             </div>
           )}
           <ModeToggle />

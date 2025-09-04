@@ -9,8 +9,8 @@ This project simulates real-world wallet operations similar to bKash or Nagad, i
 ## 🔗 Live Link
 
 * **Frontend**: [https://paysphere-client.vercel.app](https://paysphere-client.vercel.app) 
-* **Backend**: [https://pay-sphere-server.vercel.app](http://localhost:5000)
-* **Backend Repository**: [https://github.com/imam0321/PaySphere-server]()
+* **Backend**: [https://pay-sphere-server.vercel.app](https://pay-sphere-server.vercel.app)
+* **Backend Repository**: [https://github.com/imam0321/PaySphere-server](https://github.com/imam0321/PaySphere-server)
 
 ---
 
