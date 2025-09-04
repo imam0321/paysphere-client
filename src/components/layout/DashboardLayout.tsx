@@ -3,8 +3,6 @@ import { Outlet } from "react-router";
 import { AppSidebar } from "../app-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { ModeToggle } from "./mode.toggle";
-import { Suspense } from "react";
-import LoadingPage from "@/pages/LoadingPage";
 import LogoutButton from "../modules/Authentication/LogoutButton";
 import {
   authApi,
@@ -13,6 +11,8 @@ import {
 } from "@/redux/features/auth/auth";
 import { useAppDispatch } from "@/redux/hooks";
 import { toast } from "sonner";
+import { Suspense } from "react";
+import { Skeleton } from "../ui/skeleton";
 
 export default function DashboardLayout() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -42,7 +42,7 @@ export default function DashboardLayout() {
         </header>
 
         <main className="flex flex-1 flex-col gap-4 p-4 max-w-7xl mx-auto w-full">
-          <Suspense fallback={<LoadingPage />}>
+          <Suspense fallback={<Skeleton className="h-full w-full" />}>
             <Outlet />
           </Suspense>
         </main>

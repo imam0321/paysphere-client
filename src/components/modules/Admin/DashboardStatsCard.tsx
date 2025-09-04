@@ -5,27 +5,17 @@ import {
   IconUserDollar,
   IconArrowsExchange,
 } from "@tabler/icons-react";
-import { useUserInfoQuery } from "@/redux/features/auth/auth";
-import { useGetAllUserQuery } from "@/redux/features/user/user";
-import { useGetAllAgentQuery } from "@/redux/features/agent/agent";
-import { useGetAllTransactionQuery } from "@/redux/features/transaction/transaction";
 import CountUp from "react-countup";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGetDashboardStatsQuery } from "@/redux/features/transaction/transaction";
 
 export default function DashboardStatsCard() {
-  const { data: userInfo, isLoading: userInfoLoading } = useUserInfoQuery();
-  const { data: totalUser, isLoading: usersLoading } = useGetAllUserQuery(undefined);
-  const { data: totalAgent, isLoading: agentsLoading } = useGetAllAgentQuery(undefined);
-  const { data: totalTransaction, isLoading: transactionsLoading } = useGetAllTransactionQuery(undefined);
-
-  const isLoading = userInfoLoading || usersLoading || agentsLoading || transactionsLoading;
-
-  const walletBalance = userInfo?.walletId?.balance ?? 0;
+  const { data: statsData, isLoading } = useGetDashboardStatsQuery(undefined);
 
   const stats = [
     {
       title: "Wallet Balance",
-      value: walletBalance,
+      value: statsData?.data?.walletBalance ?? 0,
       suffix: " Tk",
       icon: <IconWallet className="h-8 w-8 text-primary" />,
       description: "Your current wallet balance",
@@ -33,21 +23,21 @@ export default function DashboardStatsCard() {
     },
     {
       title: "Total Users",
-      value: totalUser?.meta?.total || 0,
+      value: statsData?.data?.totalUsers ?? 0,
       icon: <IconUsers className="h-8 w-8 text-muted-foreground" />,
       description: "Registered users in the system",
       bg: "bg-secondary/20",
     },
     {
       title: "Total Agents",
-      value: totalAgent?.meta?.total || 0,
+      value: statsData?.data?.totalAgents ?? 0,
       icon: <IconUserDollar className="h-8 w-8 text-muted-foreground" />,
       description: "Registered agent in the system",
       bg: "bg-accent/20",
     },
     {
       title: "Total Transactions",
-      value: totalTransaction?.meta?.total || 0,
+      value: statsData?.data?.totalTransactions ?? 0,
       icon: <IconArrowsExchange className="h-8 w-8 text-destructive" />,
       description: "Overall processed transactions",
       bg: "bg-destructive/20",
@@ -69,12 +59,16 @@ export default function DashboardStatsCard() {
                   {isLoading ? (
                     <Skeleton className="h-8 w-24 rounded-md" />
                   ) : (
-                    <CountUp 
+                    <CountUp
                       start={0}
-                      end={item.value} 
-                      duration={2.5} 
-                      separator="," 
-                      decimals={typeof item.value === "number" && item.value % 1 !== 0 ? 2 : 0}
+                      end={item.value}
+                      duration={2.5}
+                      separator=","
+                      decimals={
+                        typeof item.value === "number" && item.value % 1 !== 0
+                          ? 2
+                          : 0
+                      }
                       suffix={item.suffix || ""}
                       useEasing={true}
                     />

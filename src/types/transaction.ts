@@ -62,3 +62,10 @@ export interface ITransactionSummaryResponse {
   totalCashOut: number
   totalWithdraw: number
 }
+
+export interface IDashboardStatsResponse {
+  walletBalance: number
+  totalUsers: number
+  totalAgents: number
+  totalTransactions: number
+}

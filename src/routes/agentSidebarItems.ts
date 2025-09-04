@@ -9,14 +9,14 @@ export const agentSidebarItems: ISidebarItem[] = [
     title: "Dashboard",
     items: [
       {
-        title: "Profile",
-        url: "/agent/me",
-        component: ProfilePage,
-      },
-      {
         title: "My Wallet",
         url: "/agent/wallet",
         component: WalletPage,
+      },
+      {
+        title: "Profile",
+        url: "/agent/me",
+        component: ProfilePage,
       },
       {
         title: "My Transaction",

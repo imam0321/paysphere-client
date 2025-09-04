@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 
 export type { IRegister, IRegisterResponse, ILogin, ILoginResponse, IUserResponse, IUserUpdate } from './auth';
-export type { ITransactionResponse, ITransactionAmountResponse, ITransactionSummaryResponse } from "./transaction"
+export type { ITransactionResponse, ITransactionAmountResponse, ITransactionSummaryResponse, IDashboardStatsResponse } from "./transaction"
 export type { IWalletResponse, IAddMoney, IMoneyResponse, ITransferMoney, TTransactionType } from './wallet';
 
 

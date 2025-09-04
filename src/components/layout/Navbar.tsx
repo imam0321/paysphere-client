@@ -160,7 +160,7 @@ export default function Navbar() {
                     <Link to="/login" onClick={() => setOpen(false)}>
                       <Button className="w-full rounded-2xl">Login</Button>
                     </Link>
-                    <Link to="/register" onClick={() => setOpen(false)}>
+                    <Link to="/user/register" onClick={() => setOpen(false)}>
                       <Button
                         variant="secondary"
                         className="w-full rounded-2xl"

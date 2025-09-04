@@ -1,5 +1,5 @@
 import { baseApi } from "@/redux/baseApi";
-import type { IResponse, ITransactionAmountResponse, ITransactionResponse, ITransactionSummaryResponse } from "@/types";
+import type { IDashboardStatsResponse, IResponse, ITransactionAmountResponse, ITransactionResponse, ITransactionSummaryResponse } from "@/types";
 
 export const transactionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,6 +21,14 @@ export const transactionApi = baseApi.injectEndpoints({
       providesTags: ["TRANSACTION"],
     }),
 
+    getDashboardStats: builder.query<IResponse<IDashboardStatsResponse>, unknown>({
+      query: () => ({
+        url: "/stats/dashboard-stats",
+        method: "GET",
+      }),
+      providesTags: ["TRANSACTION", "WALLET", "USER", "AGENT"],
+    }),
+    
     getMyTransactionAmount: builder.query<IResponse<ITransactionAmountResponse>, unknown>({
       query: () => ({
         url: "/stats/transaction-amount",
@@ -43,6 +51,7 @@ export const transactionApi = baseApi.injectEndpoints({
 export const {
   useGetAllTransactionQuery,
   useGetMyTransactionQuery,
+  useGetDashboardStatsQuery,
   useGetMyTransactionAmountQuery,
   useGetAllTransactionSummaryQuery,
 } = transactionApi;

@@ -9,14 +9,14 @@ export const userSidebarItems: ISidebarItem[] = [
     title: "Dashboard",
     items: [
       {
-        title: "Profile",
-        url: "/user/me",
-        component: ProfilePage,
-      },
-      {
         title: "My Wallet",
         url: "/user/wallet",
         component: WalletPage,
+      },
+      {
+        title: "Profile",
+        url: "/user/me",
+        component: ProfilePage,
       },
       {
         title: "My Transaction",
