@@ -1,4 +1,4 @@
-# PaySphere Fullstack Project (TypeScript)
+# PaySphere Fullstack Project 
 
 **PaySphere** is a fullstack digital wallet application fully implemented in **TypeScript**, providing **secure, role-based access** for Users, Agents, and Admins. The frontend is built with **React.js + TypeScript**, **Redux Toolkit**, and **RTK Query**, while the backend uses **Node.js/Express + TypeScript**, **MongoDB**, and **JWT** authentication.
 
@@ -8,7 +8,7 @@ This project simulates real-world wallet operations similar to bKash or Nagad, i
 
 ## 🔗 Live Link
 
-* **Frontend**: [](https://paysphere-client.vercel.app) 
+* **Frontend**: [https://paysphere-client.vercel.app](https://paysphere-client.vercel.app) 
 * **Backend**: [https://pay-sphere-server.vercel.app](http://localhost:5000)
 * **Backend Repository**: [https://github.com/imam0321/PaySphere-server]()
 
@@ -129,12 +129,4 @@ Use the following accounts to test the application:
 
 * Email: [imam.hossain0321@example.com](mailto:imam0321@example.com)
 
----
 
-## 🔗 References
-
-* [React.js Documentation](https://reactjs.org/docs/getting-started.html)
-* [Redux Toolkit Documentation](https://redux-toolkit.js.org/)
-* [RTK Query Documentation](https://redux-toolkit.js.org/rtk-query/overview)
-* [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-* [TypeScript Documentation](https://www.typescriptlang.org/docs/)
